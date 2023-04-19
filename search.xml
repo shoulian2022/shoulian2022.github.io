@@ -1,43 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>区块链基础知识</title>
-    <url>/2022/05/18/%E5%8C%BA%E5%9D%97%E9%93%BE%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</url>
-    <content><![CDATA[<blockquote>
-<p>在我的看不到的世界里，还有这么一个有趣的生态链！</p>
-</blockquote>
-<h1>区块链基础知识</h1>
-<p>区块链：顾名思义，由每一个区块组成的链条</p>
-<p>他每一块存储的都是每一笔每一笔的转账。这样子就可以所有人都看得见，并且难以篡改的分部署账本</p>
-<p>hash：区块的哈希 相当于人类的指纹</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">如hash(数据) = xxxx</span><br></pre></td></tr></table></figure>
-<p>如果数据变动了，对应的hash值也会变，当一个新的hash值被建立出来的时候，他的<code>hash</code>值就是固定的</p>
-<p>为什么说区块链技术是透明去中心化的，因为你创建一个新区块的时候，他一样会存储上一个区块从而形成一个链条</p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220513190657680.png" alt="image-20220513190657680"></p>
-<p>但是区块验证前一个hash这种也是有可能被篡改的，比如数据2的区块被改了你需要从数据2开始以后的（数据3、数据4、数据5…）全部重新算一遍，让这个链条重新变得合理，但是区块链会防止这种情况发生，它引入了<strong>工作量证明机制（POW）</strong></p>
-<p>工作量证明机制（POW）：他会根据你的工作量来进行相应的评估动作</p>
-<p>举例为游戏，工作量=经验、验证工作量=升级按钮（工作量证明机制），你需要一万的经验值才能升级，那么如果你开挂了，经验值可以改成2倍获取，那么这个工作量证明机制会将经验动态调整为2倍也就是二万才能升级，以此来维持所付出多少就有多少回报的稳定</p>
-<p>比如挖矿就是利用工作量证明机制，矿工不断的搜寻区块头部的哈希然后打包交易数据并且做到全网广播，然后由其他矿工对其数据加以验证，在确认无误后将其留存上链，然后重复这些动作的过程称为挖矿，而通过挖矿获得记账的权利以及奖励</p>
-<p>以下是<code>python3</code>简单验证头部哈希的代码</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"><span class="keyword">from</span> hashlib <span class="keyword">import</span> md5</span><br><span class="line"></span><br><span class="line">i = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    i = i+<span class="number">1</span></span><br><span class="line">    msgx = <span class="string">&#x27;ctl&#x27;</span></span><br><span class="line">    msg = <span class="string">&#x27;&#x27;&#x27;&#123;msg&#125;&#123;i&#125;&#x27;&#x27;&#x27;</span>.<span class="built_in">format</span>(msg=msgx,i=i).encode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line">    hash_mgs = md5(msg).hexdigest()</span><br><span class="line">    <span class="keyword">if</span> hash_mgs[<span class="number">0</span>:<span class="number">5</span>] == <span class="string">&#x27;00000&#x27;</span>:</span><br><span class="line">        <span class="built_in">print</span>(msg,hash_mgs)</span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220513205211175.png" alt="image-20220513205211175"></p>
-<p>可以看到，光验证前五位00000的时候都到了26万次验证，那如果是10位或者其他会更复杂，这也就要求了挖矿得有强大的算力</p>
-<p><strong>P2P点对点网络</strong></p>
-<p>区块链还引入了这一个共识机制，比如说我创建了一个区块，会对全部人进行广播，来验证这个区块是否被篡改，只有全部人达到共识（验证成功）才会加入到这个链当中</p>
-<h2 id="python搭建一个简单易懂的区块链">python搭建一个简单易懂的区块链</h2>
-<p>区块链的基本实现功能：</p>
-<p>1、区块：一个新的区块链它会将自己数据 加上 上一个区块的哈希值为自己本身的数据哈希值（<code>hash = sha256(data+上一个区块哈希值)</code>）</p>
-<p>2、链：它本身是一个数组，由区块连成一条链</p>
-<p>每一个链生成的时候有一个祖先区块</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sha256</span>(<span class="params">dataNeedSha</span>):</span><br><span class="line">    sha256 = hashlib.sha256()</span><br><span class="line">    sha256.update(dataNeedSha.encode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br><span class="line">    <span class="keyword">return</span> sha256.hexdigest()</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">存储的数据</span></span><br><span class="line"><span class="string">1、之前的区块链</span></span><br><span class="line"><span class="string">2、自己的哈希值 它是由存储在区块里的信息算出来的（data+之前区块链的哈希值）</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Block</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self,datastr,previousHash</span>):</span><br><span class="line">        self.datastr = datastr <span class="comment"># 区块本身数据</span></span><br><span class="line">        self.previousHash = previousHash <span class="comment"># 上一个区块的哈希值</span></span><br><span class="line">        self.<span class="built_in">hash</span> = self.computeHash <span class="comment"># 区块本身数据的哈希值</span></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">computeHash</span>(<span class="params">self</span>): <span class="comment"># 区块本身数据的哈希值为sha256(data+上一个哈希值)</span></span><br><span class="line">        <span class="comment"># print(self.previousHash,self.datastr)</span></span><br><span class="line">        strData = self.datastr+self.previousHash</span><br><span class="line">        <span class="keyword">return</span> sha256(strData)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">ShowBlock</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(&#123;<span class="string">&#x27;data&#x27;</span>: self.datastr, <span class="string">&#x27;previousHash&#x27;</span>: self.previousHash, <span class="string">&#x27;hash&#x27;</span>: self.<span class="built_in">hash</span>&#125;)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">区块的链</span></span><br><span class="line"><span class="string">1、生成祖先区块</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Chain</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        self.chain = [self.bigBang]</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">bigBang</span>(<span class="params">self</span>):</span><br><span class="line">        genesisBlock = Block(<span class="string">&#x27;我是祖先区块&#x27;</span>,<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">        <span class="keyword">return</span> genesisBlock</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">getLastBlockHash</span>(<span class="params">self</span>): <span class="comment"># 获取最后一个区块的哈希值，用于添加到链中当上一个区块的哈希值</span></span><br><span class="line">        <span class="keyword">return</span> self.chain[ <span class="built_in">len</span>(self.chain)-<span class="number">1</span> ].<span class="built_in">hash</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">ShowChain</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> self.chain:</span><br><span class="line">            i.ShowBlock()</span><br><span class="line">    <span class="comment"># 添加区块到链上</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">addBlockToChain</span>(<span class="params">self,newBlock</span>):</span><br><span class="line">        <span class="comment"># 1、首先找到上一个区块的哈希值然后传入到Block类的previousHash</span></span><br><span class="line">        newBlock.previousHash = self.getLastBlockHash</span><br><span class="line">        newBlock.<span class="built_in">hash</span> = newBlock.computeHash</span><br><span class="line">        self.chain.append(newBlock)</span><br><span class="line">    <span class="comment"># 验证当前的链是否合法</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">validateChain</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="comment"># 1、验证区块的哈希值和他的previousHash是否相同</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(self.chain) == <span class="number">1</span>: <span class="comment"># 如果区块数组只有一个区块，即表示是刚新建的，不存在篡改返回True即可</span></span><br><span class="line">            <span class="comment"># 上一个注释如果觉得不够严谨也可以验证一下</span></span><br><span class="line">            <span class="keyword">if</span> self.chain[<span class="number">0</span>].<span class="built_in">hash</span> == self.chain[<span class="number">0</span>].computeHash:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="comment"># 2、self.chian[1]是第二个区块开始</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(self.chain)):</span><br><span class="line">            <span class="keyword">if</span> self.chain[i].<span class="built_in">hash</span> != self.chain[i].computeHash:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&#x27;数据被篡改&#x27;</span>)</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            <span class="keyword">if</span> self.chain[i].previousHash != self.chain[i-<span class="number">1</span>].<span class="built_in">hash</span>:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&#x27;前后数据链断裂&#x27;</span>)</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">shoulianBlock1 = Block(<span class="string">&#x27;转账100元&#x27;</span>,<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">shoulianBlock2 = Block(<span class="string">&#x27;转账200元&#x27;</span>,<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">shoulianBlock3 = Block(<span class="string">&#x27;转账300元&#x27;</span>,<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">shoulianChain = Chain()</span><br><span class="line">shoulianChain.addBlockToChain(shoulianBlock1)</span><br><span class="line">shoulianChain.addBlockToChain(shoulianBlock2)</span><br><span class="line">shoulianChain.addBlockToChain(shoulianBlock3)</span><br><span class="line">shoulianChain.chain[<span class="number">1</span>].datastr = <span class="string">&#x27;转账33300元&#x27;</span> <span class="comment"># 尝试篡改账本为转账1000元 可以看到是不行的 因为这里只是改了他的data 并没有改computeHash值</span></span><br><span class="line"><span class="comment"># 尝试修正computeHash</span></span><br><span class="line">shoulianChain.chain[<span class="number">1</span>].<span class="built_in">hash</span> = shoulianChain.chain[<span class="number">1</span>].computeHash</span><br><span class="line">shoulianChain.ShowChain()</span><br><span class="line"><span class="built_in">print</span>(shoulianChain.validateChain())</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Web3</category>
-      </categories>
-      <tags>
-        <tag>区块链</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Solidity案例-存款合约</title>
     <url>/2022/05/19/Solidity%E6%A1%88%E4%BE%8B-%E5%AD%98%E6%AC%BE%E5%90%88%E7%BA%A6/</url>
     <content><![CDATA[<h2 id="Solidity代码">Solidity代码</h2>
@@ -67,6 +30,40 @@
       </categories>
       <tags>
         <tag>Solidity</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>合约溢出漏洞</title>
+    <url>/2022/06/09/%E5%90%88%E7%BA%A6%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E/</url>
+    <content><![CDATA[<h3 id="1、加法溢出">1、加法溢出</h3>
+<p><code>uint256</code>的值是<code>2**256</code></p>
+<p>如果输入的值是<code>2**256-1</code>然后在加任何一个大于0的无符号数字就会溢出变成<code>0</code></p>
+<p>比如<code>2**256-1</code> + <code>1</code> = <code>0</code></p>
+<p><code>2**256-1</code> + <code>2</code> = <code>1</code></p>
+<h3 id="2、减法溢出">2、减法溢出</h3>
+<p>如果<code>uint256</code>类型的变量是等于<code>0</code>的数，那么此时再减去一个小于<code>0</code>的数就会变成<code>2**256-1</code>的值</p>
+<h3 id="3、乘法溢出">3、乘法溢出</h3>
+<p>如果<code>uint256</code>类型的变量超过它的最大值(<code>2**255 - 1</code>)，最后就会回绕变成<code>0</code></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// SPDX-License-Identifier: MIT  </span></span><br><span class="line">pragma solidity ^<span class="number">0.4</span><span class="number">.25</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="variable constant_">POC</span>&#123;</span><br><span class="line">    uint256 public _addnum;</span><br><span class="line">    uint256 public _subnum;</span><br><span class="line">    uint256 public _mulnum;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">add_overflow</span>(<span class="params"></span>)&#123; <span class="comment">// 加法溢出</span></span><br><span class="line">        uint256 max = <span class="number">2</span>**<span class="number">256</span> - <span class="number">1</span>;</span><br><span class="line">        _addnum = max + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">sub_underflow</span>(<span class="params"></span>)&#123; <span class="comment">// 减法溢出</span></span><br><span class="line">        uint256 min = <span class="number">0</span>;</span><br><span class="line">        _subnum = min - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">mul_overflow</span>(<span class="params"></span>)&#123; <span class="comment">// 乘法溢出</span></span><br><span class="line">        uint256 mul = <span class="number">2</span> ** <span class="number">255</span>;</span><br><span class="line">        _mulnum = mul * <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609110929837.png" alt="image-20220609110929837"></p>
+<h2 id="实际攻击例子">实际攻击例子</h2>
+<h3 id="BEC-溢出案例">BEC 溢出案例</h3>
+<p><a href="https://etherscan.io/tx/0xad89ff16fd1ebe3a0a7cf4ed282302c06626c1af33221ebe0d3a470aba4a660f">https://etherscan.io/tx/0xad89ff16fd1ebe3a0a7cf4ed282302c06626c1af33221ebe0d3a470aba4a660f</a></p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609111121193.png" alt="image-20220609111121193"></p>
+<p>合约地址：<a href="https://eth.tokenview.com/cn/address/0xc5d105e63711398af9bbff092d4b6769c82f793d%EF%BC%8C%E4%BB%A3%E7%A0%81%E5%9C%A8%E9%87%8C%E9%9D%A2%E8%8E%B7%E5%8F%96%E6%94%BE">https://eth.tokenview.com/cn/address/0xc5d105e63711398af9bbff092d4b6769c82f793d，代码在里面获取放</a><code>remix</code>里跑一下就行</p>
+<p>乘法溢出点在于他的<code>batchTransfer</code>函数</p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609113059622.png" alt="image-20220609113059622"></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">batchTransfer</span>(<span class="params">address[] _receivers, uint256 _value</span>) public whenNotPaused returns (bool) &#123;</span><br><span class="line">  uint cnt = _receivers.<span class="property">length</span>;</span><br><span class="line">  uint256 amount = <span class="title function_">uint256</span>(cnt) * _value; <span class="comment">// 溢出点在这</span></span><br><span class="line">  <span class="built_in">require</span>(cnt &gt; <span class="number">0</span> &amp;&amp; cnt &lt;= <span class="number">20</span>); <span class="comment">// 这个cnt是地址的长度，最小不能小于0，最大不能大于20个地址</span></span><br><span class="line">  <span class="built_in">require</span>(_value &gt; <span class="number">0</span> &amp;&amp; balances[msg.<span class="property">sender</span>] &gt;= amount); <span class="comment">// 传入的_value值必须大于0 并且 转账的用户余额要大于或等于当前转账数</span></span><br><span class="line"></span><br><span class="line">  balances[msg.<span class="property">sender</span>] = balances[msg.<span class="property">sender</span>].<span class="title function_">sub</span>(amount);</span><br><span class="line">  <span class="keyword">for</span> (uint i = <span class="number">0</span>; i &lt; cnt; i++) &#123;</span><br><span class="line">      balances[_receivers[i]] = balances[_receivers[i]].<span class="title function_">add</span>(_value);</span><br><span class="line">      <span class="title class_">Transfer</span>(msg.<span class="property">sender</span>, _receivers[i], _value);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>部署后在<code>_receivers</code>里放<code>[&quot;0x617F2E2fD72FD9D5503197092aC168c91465E7f2&quot;,&quot;0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB&quot;]</code></p>
+<p>在<code>_value</code>里放 <code>&quot;57896044618658097711785492504343953926634992332820282019728792003956564819968&quot;</code>（2**255的值）</p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609113315782.png" alt="image-20220609113315782"></p>
+<p>然后就可以看到 通过溢出 我只需要耗费<code>0</code>的代币就可以获取到<code>57896044618658097711785492504343953926634992332820282019728792003956564819968</code>个代币</p>
+]]></content>
+      <categories>
+        <category>Web3</category>
+      </categories>
+      <tags>
+        <tag>合约安全</tag>
       </tags>
   </entry>
   <entry>
@@ -175,37 +172,40 @@
       </tags>
   </entry>
   <entry>
-    <title>合约溢出漏洞</title>
-    <url>/2022/06/09/%E5%90%88%E7%BA%A6%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E/</url>
-    <content><![CDATA[<h3 id="1、加法溢出">1、加法溢出</h3>
-<p><code>uint256</code>的值是<code>2**256</code></p>
-<p>如果输入的值是<code>2**256-1</code>然后在加任何一个大于0的无符号数字就会溢出变成<code>0</code></p>
-<p>比如<code>2**256-1</code> + <code>1</code> = <code>0</code></p>
-<p><code>2**256-1</code> + <code>2</code> = <code>1</code></p>
-<h3 id="2、减法溢出">2、减法溢出</h3>
-<p>如果<code>uint256</code>类型的变量是等于<code>0</code>的数，那么此时再减去一个小于<code>0</code>的数就会变成<code>2**256-1</code>的值</p>
-<h3 id="3、乘法溢出">3、乘法溢出</h3>
-<p>如果<code>uint256</code>类型的变量超过它的最大值(<code>2**255 - 1</code>)，最后就会回绕变成<code>0</code></p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// SPDX-License-Identifier: MIT  </span></span><br><span class="line">pragma solidity ^<span class="number">0.4</span><span class="number">.25</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="variable constant_">POC</span>&#123;</span><br><span class="line">    uint256 public _addnum;</span><br><span class="line">    uint256 public _subnum;</span><br><span class="line">    uint256 public _mulnum;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">add_overflow</span>(<span class="params"></span>)&#123; <span class="comment">// 加法溢出</span></span><br><span class="line">        uint256 max = <span class="number">2</span>**<span class="number">256</span> - <span class="number">1</span>;</span><br><span class="line">        _addnum = max + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">sub_underflow</span>(<span class="params"></span>)&#123; <span class="comment">// 减法溢出</span></span><br><span class="line">        uint256 min = <span class="number">0</span>;</span><br><span class="line">        _subnum = min - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">mul_overflow</span>(<span class="params"></span>)&#123; <span class="comment">// 乘法溢出</span></span><br><span class="line">        uint256 mul = <span class="number">2</span> ** <span class="number">255</span>;</span><br><span class="line">        _mulnum = mul * <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609110929837.png" alt="image-20220609110929837"></p>
-<h2 id="实际攻击例子">实际攻击例子</h2>
-<h3 id="BEC-溢出案例">BEC 溢出案例</h3>
-<p><a href="https://etherscan.io/tx/0xad89ff16fd1ebe3a0a7cf4ed282302c06626c1af33221ebe0d3a470aba4a660f">https://etherscan.io/tx/0xad89ff16fd1ebe3a0a7cf4ed282302c06626c1af33221ebe0d3a470aba4a660f</a></p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609111121193.png" alt="image-20220609111121193"></p>
-<p>合约地址：<a href="https://eth.tokenview.com/cn/address/0xc5d105e63711398af9bbff092d4b6769c82f793d%EF%BC%8C%E4%BB%A3%E7%A0%81%E5%9C%A8%E9%87%8C%E9%9D%A2%E8%8E%B7%E5%8F%96%E6%94%BE">https://eth.tokenview.com/cn/address/0xc5d105e63711398af9bbff092d4b6769c82f793d，代码在里面获取放</a><code>remix</code>里跑一下就行</p>
-<p>乘法溢出点在于他的<code>batchTransfer</code>函数</p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609113059622.png" alt="image-20220609113059622"></p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">batchTransfer</span>(<span class="params">address[] _receivers, uint256 _value</span>) public whenNotPaused returns (bool) &#123;</span><br><span class="line">  uint cnt = _receivers.<span class="property">length</span>;</span><br><span class="line">  uint256 amount = <span class="title function_">uint256</span>(cnt) * _value; <span class="comment">// 溢出点在这</span></span><br><span class="line">  <span class="built_in">require</span>(cnt &gt; <span class="number">0</span> &amp;&amp; cnt &lt;= <span class="number">20</span>); <span class="comment">// 这个cnt是地址的长度，最小不能小于0，最大不能大于20个地址</span></span><br><span class="line">  <span class="built_in">require</span>(_value &gt; <span class="number">0</span> &amp;&amp; balances[msg.<span class="property">sender</span>] &gt;= amount); <span class="comment">// 传入的_value值必须大于0 并且 转账的用户余额要大于或等于当前转账数</span></span><br><span class="line"></span><br><span class="line">  balances[msg.<span class="property">sender</span>] = balances[msg.<span class="property">sender</span>].<span class="title function_">sub</span>(amount);</span><br><span class="line">  <span class="keyword">for</span> (uint i = <span class="number">0</span>; i &lt; cnt; i++) &#123;</span><br><span class="line">      balances[_receivers[i]] = balances[_receivers[i]].<span class="title function_">add</span>(_value);</span><br><span class="line">      <span class="title class_">Transfer</span>(msg.<span class="property">sender</span>, _receivers[i], _value);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>部署后在<code>_receivers</code>里放<code>[&quot;0x617F2E2fD72FD9D5503197092aC168c91465E7f2&quot;,&quot;0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB&quot;]</code></p>
-<p>在<code>_value</code>里放 <code>&quot;57896044618658097711785492504343953926634992332820282019728792003956564819968&quot;</code>（2**255的值）</p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609113315782.png" alt="image-20220609113315782"></p>
-<p>然后就可以看到 通过溢出 我只需要耗费<code>0</code>的代币就可以获取到<code>57896044618658097711785492504343953926634992332820282019728792003956564819968</code>个代币</p>
-]]></content>
+    <title>区块链基础知识</title>
+    <url>/2022/05/18/%E5%8C%BA%E5%9D%97%E9%93%BE%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</url>
+    <content><![CDATA[<blockquote>
+<p>在我的看不到的世界里，还有这么一个有趣的生态链！</p>
+</blockquote>
+<h1>区块链基础知识</h1>
+<p>区块链：顾名思义，由每一个区块组成的链条</p>
+<p>他每一块存储的都是每一笔每一笔的转账。这样子就可以所有人都看得见，并且难以篡改的分部署账本</p>
+<p>hash：区块的哈希 相当于人类的指纹</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">如hash(数据) = xxxx</span><br></pre></td></tr></table></figure>
+<p>如果数据变动了，对应的hash值也会变，当一个新的hash值被建立出来的时候，他的<code>hash</code>值就是固定的</p>
+<p>为什么说区块链技术是透明去中心化的，因为你创建一个新区块的时候，他一样会存储上一个区块从而形成一个链条</p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220513190657680.png" alt="image-20220513190657680"></p>
+<p>但是区块验证前一个hash这种也是有可能被篡改的，比如数据2的区块被改了你需要从数据2开始以后的（数据3、数据4、数据5…）全部重新算一遍，让这个链条重新变得合理，但是区块链会防止这种情况发生，它引入了<strong>工作量证明机制（POW）</strong></p>
+<p>工作量证明机制（POW）：他会根据你的工作量来进行相应的评估动作</p>
+<p>举例为游戏，工作量=经验、验证工作量=升级按钮（工作量证明机制），你需要一万的经验值才能升级，那么如果你开挂了，经验值可以改成2倍获取，那么这个工作量证明机制会将经验动态调整为2倍也就是二万才能升级，以此来维持所付出多少就有多少回报的稳定</p>
+<p>比如挖矿就是利用工作量证明机制，矿工不断的搜寻区块头部的哈希然后打包交易数据并且做到全网广播，然后由其他矿工对其数据加以验证，在确认无误后将其留存上链，然后重复这些动作的过程称为挖矿，而通过挖矿获得记账的权利以及奖励</p>
+<p>以下是<code>python3</code>简单验证头部哈希的代码</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"><span class="keyword">from</span> hashlib <span class="keyword">import</span> md5</span><br><span class="line"></span><br><span class="line">i = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    i = i+<span class="number">1</span></span><br><span class="line">    msgx = <span class="string">&#x27;ctl&#x27;</span></span><br><span class="line">    msg = <span class="string">&#x27;&#x27;&#x27;&#123;msg&#125;&#123;i&#125;&#x27;&#x27;&#x27;</span>.<span class="built_in">format</span>(msg=msgx,i=i).encode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line">    hash_mgs = md5(msg).hexdigest()</span><br><span class="line">    <span class="keyword">if</span> hash_mgs[<span class="number">0</span>:<span class="number">5</span>] == <span class="string">&#x27;00000&#x27;</span>:</span><br><span class="line">        <span class="built_in">print</span>(msg,hash_mgs)</span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220513205211175.png" alt="image-20220513205211175"></p>
+<p>可以看到，光验证前五位00000的时候都到了26万次验证，那如果是10位或者其他会更复杂，这也就要求了挖矿得有强大的算力</p>
+<p><strong>P2P点对点网络</strong></p>
+<p>区块链还引入了这一个共识机制，比如说我创建了一个区块，会对全部人进行广播，来验证这个区块是否被篡改，只有全部人达到共识（验证成功）才会加入到这个链当中</p>
+<h2 id="python搭建一个简单易懂的区块链">python搭建一个简单易懂的区块链</h2>
+<p>区块链的基本实现功能：</p>
+<p>1、区块：一个新的区块链它会将自己数据 加上 上一个区块的哈希值为自己本身的数据哈希值（<code>hash = sha256(data+上一个区块哈希值)</code>）</p>
+<p>2、链：它本身是一个数组，由区块连成一条链</p>
+<p>每一个链生成的时候有一个祖先区块</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sha256</span>(<span class="params">dataNeedSha</span>):</span><br><span class="line">    sha256 = hashlib.sha256()</span><br><span class="line">    sha256.update(dataNeedSha.encode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br><span class="line">    <span class="keyword">return</span> sha256.hexdigest()</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">存储的数据</span></span><br><span class="line"><span class="string">1、之前的区块链</span></span><br><span class="line"><span class="string">2、自己的哈希值 它是由存储在区块里的信息算出来的（data+之前区块链的哈希值）</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Block</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self,datastr,previousHash</span>):</span><br><span class="line">        self.datastr = datastr <span class="comment"># 区块本身数据</span></span><br><span class="line">        self.previousHash = previousHash <span class="comment"># 上一个区块的哈希值</span></span><br><span class="line">        self.<span class="built_in">hash</span> = self.computeHash <span class="comment"># 区块本身数据的哈希值</span></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">computeHash</span>(<span class="params">self</span>): <span class="comment"># 区块本身数据的哈希值为sha256(data+上一个哈希值)</span></span><br><span class="line">        <span class="comment"># print(self.previousHash,self.datastr)</span></span><br><span class="line">        strData = self.datastr+self.previousHash</span><br><span class="line">        <span class="keyword">return</span> sha256(strData)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">ShowBlock</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(&#123;<span class="string">&#x27;data&#x27;</span>: self.datastr, <span class="string">&#x27;previousHash&#x27;</span>: self.previousHash, <span class="string">&#x27;hash&#x27;</span>: self.<span class="built_in">hash</span>&#125;)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">区块的链</span></span><br><span class="line"><span class="string">1、生成祖先区块</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Chain</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        self.chain = [self.bigBang]</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">bigBang</span>(<span class="params">self</span>):</span><br><span class="line">        genesisBlock = Block(<span class="string">&#x27;我是祖先区块&#x27;</span>,<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">        <span class="keyword">return</span> genesisBlock</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">getLastBlockHash</span>(<span class="params">self</span>): <span class="comment"># 获取最后一个区块的哈希值，用于添加到链中当上一个区块的哈希值</span></span><br><span class="line">        <span class="keyword">return</span> self.chain[ <span class="built_in">len</span>(self.chain)-<span class="number">1</span> ].<span class="built_in">hash</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">ShowChain</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> self.chain:</span><br><span class="line">            i.ShowBlock()</span><br><span class="line">    <span class="comment"># 添加区块到链上</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">addBlockToChain</span>(<span class="params">self,newBlock</span>):</span><br><span class="line">        <span class="comment"># 1、首先找到上一个区块的哈希值然后传入到Block类的previousHash</span></span><br><span class="line">        newBlock.previousHash = self.getLastBlockHash</span><br><span class="line">        newBlock.<span class="built_in">hash</span> = newBlock.computeHash</span><br><span class="line">        self.chain.append(newBlock)</span><br><span class="line">    <span class="comment"># 验证当前的链是否合法</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">validateChain</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="comment"># 1、验证区块的哈希值和他的previousHash是否相同</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(self.chain) == <span class="number">1</span>: <span class="comment"># 如果区块数组只有一个区块，即表示是刚新建的，不存在篡改返回True即可</span></span><br><span class="line">            <span class="comment"># 上一个注释如果觉得不够严谨也可以验证一下</span></span><br><span class="line">            <span class="keyword">if</span> self.chain[<span class="number">0</span>].<span class="built_in">hash</span> == self.chain[<span class="number">0</span>].computeHash:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="comment"># 2、self.chian[1]是第二个区块开始</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(self.chain)):</span><br><span class="line">            <span class="keyword">if</span> self.chain[i].<span class="built_in">hash</span> != self.chain[i].computeHash:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&#x27;数据被篡改&#x27;</span>)</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            <span class="keyword">if</span> self.chain[i].previousHash != self.chain[i-<span class="number">1</span>].<span class="built_in">hash</span>:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&#x27;前后数据链断裂&#x27;</span>)</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">shoulianBlock1 = Block(<span class="string">&#x27;转账100元&#x27;</span>,<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">shoulianBlock2 = Block(<span class="string">&#x27;转账200元&#x27;</span>,<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">shoulianBlock3 = Block(<span class="string">&#x27;转账300元&#x27;</span>,<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">shoulianChain = Chain()</span><br><span class="line">shoulianChain.addBlockToChain(shoulianBlock1)</span><br><span class="line">shoulianChain.addBlockToChain(shoulianBlock2)</span><br><span class="line">shoulianChain.addBlockToChain(shoulianBlock3)</span><br><span class="line">shoulianChain.chain[<span class="number">1</span>].datastr = <span class="string">&#x27;转账33300元&#x27;</span> <span class="comment"># 尝试篡改账本为转账1000元 可以看到是不行的 因为这里只是改了他的data 并没有改computeHash值</span></span><br><span class="line"><span class="comment"># 尝试修正computeHash</span></span><br><span class="line">shoulianChain.chain[<span class="number">1</span>].<span class="built_in">hash</span> = shoulianChain.chain[<span class="number">1</span>].computeHash</span><br><span class="line">shoulianChain.ShowChain()</span><br><span class="line"><span class="built_in">print</span>(shoulianChain.validateChain())</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>Web3</category>
       </categories>
       <tags>
-        <tag>合约安全</tag>
+        <tag>区块链</tag>
       </tags>
   </entry>
   <entry>
@@ -292,16 +292,12 @@
 <li>加速上涨和断头铡刀</li>
 </ul>
 <h5 id="死亡交叉">死亡交叉</h5>
-<blockquote>
 <p>特征：</p>
 <p><strong>死亡交叉</strong>出现在<strong>下跌初期，由两根移动平均线组成，一根时间短的均线由上向下穿过一根时间长的均线，并且是时间长的均线向下移动。一般出现在价格经过大幅度上涨后出现死亡交叉。这是一个明显的见顶信号，如果在<em>周K线和月K线出现死亡交叉，见底信号就更明显</em></strong></p>
-</blockquote>
 <p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419161916706.png" alt="image-20230419161916706"></p>
 <h5 id="死亡谷">死亡谷</h5>
-<blockquote>
 <p>特征：</p>
 <p>死亡谷出现在<strong>下跌初期，由3根移动平均线交叉组成，短期均线下穿中期、长期均线中期均线下穿长期均线，形成一个尖头向下的不规则三角形</strong></p>
-</blockquote>
 <p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419164132860.png" alt="image-20230419164132860"></p>
 <p>在<code>1HOUR</code>周期线中的<code>ETHUSDT</code></p>
 <p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419164355516.png" alt="image-20230419164355516"></p>
@@ -310,25 +306,19 @@
 <p>做空参考，比如出现<strong>死亡谷</strong>后再出现<strong>多次死亡交叉</strong>可以陆续逢高做空，<strong>如果价格站稳了10日均线以上就要注意止损了</strong></p>
 </blockquote>
 <h5 id="首次粘合向下发散形和再次粘合向下发散形">首次粘合向下发散形和再次粘合向下发散形</h5>
-<blockquote>
 <p>特征：</p>
 <p>空投排列出现在<strong>跌势中，由3根移动平均线组成，最上面一根是长期均线，中间一根是中期均线，最下面一根是短期均线，并且3根均线呈下圆弧状，在首次粘合向下发散形中，粘合时间越长向下发散的力度越大，还要注意向下发散时均线是否整齐排列</strong></p>
-</blockquote>
 <p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419190706629.png" alt="image-20230419190706629"></p>
 <p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419191147394.png" alt="image-20230419191147394"></p>
 <h5 id="加速上涨">加速上涨</h5>
-<blockquote>
 <p>特征：</p>
-<p>加速上涨出现在上涨后期，<strong>在加速上涨之前，均线系统缓慢或匀速上涨；</strong></p>
-<p>在加速上涨时，短期均线和中期、长期均线的距离越拉越大。</p>
-<p>在技术上来说，这种现象是一种止涨见顶现象，可以等均线系统走好后轻仓做多</p>
-</blockquote>
+<p>加速上涨出现在上涨后期，<strong>在加速上涨之前，均线系统缓慢或匀速上涨；</strong><br>
+在加速上涨时，短期均线和中期、长期均线的距离越拉越大。<br>
+在技术上来说，这种现象是一种止涨见顶现象，可以等均线系统走好后轻仓做多</p>
 <h5 id="断头铡刀">断头铡刀</h5>
-<blockquote>
-<p>特征：</p>
-<p>断头铡刀出现在<strong>上涨后期或高位盘整期</strong>，一根大阴线如一把刀，一下子把短、中、长期均线切断，收盘价收在所有短、中、长均线下方，短线客见此信号应该抛开离场。</p>
-<p>中长线需要关注60日和120日均线，如果这两条均线都被断头铡刀就需要止损离场了</p>
-</blockquote>
+<p>特征：<br>
+断头铡刀出现在<strong>上涨后期或高位盘整期</strong>，一根大阴线如一把刀，一下子把短、中、长期均线切断，收盘价收在所有短、中、长均线下方，短线客见此信号应该抛开离场。<br>
+中长线需要关注60日和120日均线，如果这两条均线都被断头铡刀就需要止损离场了</p>
 <p>如图显示，黑线是3根均线，红的是跌的实体，已经超过了这3根均线</p>
 <p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419195042879.png" alt="image-20230419195042879"></p>
 <p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419203916894.png" alt="image-20230419203916894"></p>
