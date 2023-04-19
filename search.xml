@@ -1,6 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>区块链基础知识</title>
+    <url>/2022/05/18/%E5%8C%BA%E5%9D%97%E9%93%BE%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</url>
+    <content><![CDATA[<blockquote>
+<p>在我的看不到的世界里，还有这么一个有趣的生态链！</p>
+</blockquote>
+<h1>区块链基础知识</h1>
+<p>区块链：顾名思义，由每一个区块组成的链条</p>
+<p>他每一块存储的都是每一笔每一笔的转账。这样子就可以所有人都看得见，并且难以篡改的分部署账本</p>
+<p>hash：区块的哈希 相当于人类的指纹</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">如hash(数据) = xxxx</span><br></pre></td></tr></table></figure>
+<p>如果数据变动了，对应的hash值也会变，当一个新的hash值被建立出来的时候，他的<code>hash</code>值就是固定的</p>
+<p>为什么说区块链技术是透明去中心化的，因为你创建一个新区块的时候，他一样会存储上一个区块从而形成一个链条</p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220513190657680.png" alt="image-20220513190657680"></p>
+<p>但是区块验证前一个hash这种也是有可能被篡改的，比如数据2的区块被改了你需要从数据2开始以后的（数据3、数据4、数据5…）全部重新算一遍，让这个链条重新变得合理，但是区块链会防止这种情况发生，它引入了<strong>工作量证明机制（POW）</strong></p>
+<p>工作量证明机制（POW）：他会根据你的工作量来进行相应的评估动作</p>
+<p>举例为游戏，工作量=经验、验证工作量=升级按钮（工作量证明机制），你需要一万的经验值才能升级，那么如果你开挂了，经验值可以改成2倍获取，那么这个工作量证明机制会将经验动态调整为2倍也就是二万才能升级，以此来维持所付出多少就有多少回报的稳定</p>
+<p>比如挖矿就是利用工作量证明机制，矿工不断的搜寻区块头部的哈希然后打包交易数据并且做到全网广播，然后由其他矿工对其数据加以验证，在确认无误后将其留存上链，然后重复这些动作的过程称为挖矿，而通过挖矿获得记账的权利以及奖励</p>
+<p>以下是<code>python3</code>简单验证头部哈希的代码</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"><span class="keyword">from</span> hashlib <span class="keyword">import</span> md5</span><br><span class="line"></span><br><span class="line">i = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    i = i+<span class="number">1</span></span><br><span class="line">    msgx = <span class="string">&#x27;ctl&#x27;</span></span><br><span class="line">    msg = <span class="string">&#x27;&#x27;&#x27;&#123;msg&#125;&#123;i&#125;&#x27;&#x27;&#x27;</span>.<span class="built_in">format</span>(msg=msgx,i=i).encode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line">    hash_mgs = md5(msg).hexdigest()</span><br><span class="line">    <span class="keyword">if</span> hash_mgs[<span class="number">0</span>:<span class="number">5</span>] == <span class="string">&#x27;00000&#x27;</span>:</span><br><span class="line">        <span class="built_in">print</span>(msg,hash_mgs)</span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220513205211175.png" alt="image-20220513205211175"></p>
+<p>可以看到，光验证前五位00000的时候都到了26万次验证，那如果是10位或者其他会更复杂，这也就要求了挖矿得有强大的算力</p>
+<p><strong>P2P点对点网络</strong></p>
+<p>区块链还引入了这一个共识机制，比如说我创建了一个区块，会对全部人进行广播，来验证这个区块是否被篡改，只有全部人达到共识（验证成功）才会加入到这个链当中</p>
+<h2 id="python搭建一个简单易懂的区块链">python搭建一个简单易懂的区块链</h2>
+<p>区块链的基本实现功能：</p>
+<p>1、区块：一个新的区块链它会将自己数据 加上 上一个区块的哈希值为自己本身的数据哈希值（<code>hash = sha256(data+上一个区块哈希值)</code>）</p>
+<p>2、链：它本身是一个数组，由区块连成一条链</p>
+<p>每一个链生成的时候有一个祖先区块</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sha256</span>(<span class="params">dataNeedSha</span>):</span><br><span class="line">    sha256 = hashlib.sha256()</span><br><span class="line">    sha256.update(dataNeedSha.encode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br><span class="line">    <span class="keyword">return</span> sha256.hexdigest()</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">存储的数据</span></span><br><span class="line"><span class="string">1、之前的区块链</span></span><br><span class="line"><span class="string">2、自己的哈希值 它是由存储在区块里的信息算出来的（data+之前区块链的哈希值）</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Block</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self,datastr,previousHash</span>):</span><br><span class="line">        self.datastr = datastr <span class="comment"># 区块本身数据</span></span><br><span class="line">        self.previousHash = previousHash <span class="comment"># 上一个区块的哈希值</span></span><br><span class="line">        self.<span class="built_in">hash</span> = self.computeHash <span class="comment"># 区块本身数据的哈希值</span></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">computeHash</span>(<span class="params">self</span>): <span class="comment"># 区块本身数据的哈希值为sha256(data+上一个哈希值)</span></span><br><span class="line">        <span class="comment"># print(self.previousHash,self.datastr)</span></span><br><span class="line">        strData = self.datastr+self.previousHash</span><br><span class="line">        <span class="keyword">return</span> sha256(strData)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">ShowBlock</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(&#123;<span class="string">&#x27;data&#x27;</span>: self.datastr, <span class="string">&#x27;previousHash&#x27;</span>: self.previousHash, <span class="string">&#x27;hash&#x27;</span>: self.<span class="built_in">hash</span>&#125;)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">区块的链</span></span><br><span class="line"><span class="string">1、生成祖先区块</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Chain</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        self.chain = [self.bigBang]</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">bigBang</span>(<span class="params">self</span>):</span><br><span class="line">        genesisBlock = Block(<span class="string">&#x27;我是祖先区块&#x27;</span>,<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">        <span class="keyword">return</span> genesisBlock</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">getLastBlockHash</span>(<span class="params">self</span>): <span class="comment"># 获取最后一个区块的哈希值，用于添加到链中当上一个区块的哈希值</span></span><br><span class="line">        <span class="keyword">return</span> self.chain[ <span class="built_in">len</span>(self.chain)-<span class="number">1</span> ].<span class="built_in">hash</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">ShowChain</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> self.chain:</span><br><span class="line">            i.ShowBlock()</span><br><span class="line">    <span class="comment"># 添加区块到链上</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">addBlockToChain</span>(<span class="params">self,newBlock</span>):</span><br><span class="line">        <span class="comment"># 1、首先找到上一个区块的哈希值然后传入到Block类的previousHash</span></span><br><span class="line">        newBlock.previousHash = self.getLastBlockHash</span><br><span class="line">        newBlock.<span class="built_in">hash</span> = newBlock.computeHash</span><br><span class="line">        self.chain.append(newBlock)</span><br><span class="line">    <span class="comment"># 验证当前的链是否合法</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">validateChain</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="comment"># 1、验证区块的哈希值和他的previousHash是否相同</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(self.chain) == <span class="number">1</span>: <span class="comment"># 如果区块数组只有一个区块，即表示是刚新建的，不存在篡改返回True即可</span></span><br><span class="line">            <span class="comment"># 上一个注释如果觉得不够严谨也可以验证一下</span></span><br><span class="line">            <span class="keyword">if</span> self.chain[<span class="number">0</span>].<span class="built_in">hash</span> == self.chain[<span class="number">0</span>].computeHash:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="comment"># 2、self.chian[1]是第二个区块开始</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(self.chain)):</span><br><span class="line">            <span class="keyword">if</span> self.chain[i].<span class="built_in">hash</span> != self.chain[i].computeHash:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&#x27;数据被篡改&#x27;</span>)</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            <span class="keyword">if</span> self.chain[i].previousHash != self.chain[i-<span class="number">1</span>].<span class="built_in">hash</span>:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&#x27;前后数据链断裂&#x27;</span>)</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">shoulianBlock1 = Block(<span class="string">&#x27;转账100元&#x27;</span>,<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">shoulianBlock2 = Block(<span class="string">&#x27;转账200元&#x27;</span>,<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">shoulianBlock3 = Block(<span class="string">&#x27;转账300元&#x27;</span>,<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">shoulianChain = Chain()</span><br><span class="line">shoulianChain.addBlockToChain(shoulianBlock1)</span><br><span class="line">shoulianChain.addBlockToChain(shoulianBlock2)</span><br><span class="line">shoulianChain.addBlockToChain(shoulianBlock3)</span><br><span class="line">shoulianChain.chain[<span class="number">1</span>].datastr = <span class="string">&#x27;转账33300元&#x27;</span> <span class="comment"># 尝试篡改账本为转账1000元 可以看到是不行的 因为这里只是改了他的data 并没有改computeHash值</span></span><br><span class="line"><span class="comment"># 尝试修正computeHash</span></span><br><span class="line">shoulianChain.chain[<span class="number">1</span>].<span class="built_in">hash</span> = shoulianChain.chain[<span class="number">1</span>].computeHash</span><br><span class="line">shoulianChain.ShowChain()</span><br><span class="line"><span class="built_in">print</span>(shoulianChain.validateChain())</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Web3</category>
+      </categories>
+      <tags>
+        <tag>区块链</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Solidity案例-存款合约</title>
     <url>/2022/05/19/Solidity%E6%A1%88%E4%BE%8B-%E5%AD%98%E6%AC%BE%E5%90%88%E7%BA%A6/</url>
     <content><![CDATA[<h2 id="Solidity代码">Solidity代码</h2>
@@ -138,43 +175,6 @@
       </tags>
   </entry>
   <entry>
-    <title>区块链基础知识</title>
-    <url>/2022/05/18/%E5%8C%BA%E5%9D%97%E9%93%BE%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</url>
-    <content><![CDATA[<blockquote>
-<p>在我的看不到的世界里，还有这么一个有趣的生态链！</p>
-</blockquote>
-<h1>区块链基础知识</h1>
-<p>区块链：顾名思义，由每一个区块组成的链条</p>
-<p>他每一块存储的都是每一笔每一笔的转账。这样子就可以所有人都看得见，并且难以篡改的分部署账本</p>
-<p>hash：区块的哈希 相当于人类的指纹</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">如hash(数据) = xxxx</span><br></pre></td></tr></table></figure>
-<p>如果数据变动了，对应的hash值也会变，当一个新的hash值被建立出来的时候，他的<code>hash</code>值就是固定的</p>
-<p>为什么说区块链技术是透明去中心化的，因为你创建一个新区块的时候，他一样会存储上一个区块从而形成一个链条</p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220513190657680.png" alt="image-20220513190657680"></p>
-<p>但是区块验证前一个hash这种也是有可能被篡改的，比如数据2的区块被改了你需要从数据2开始以后的（数据3、数据4、数据5…）全部重新算一遍，让这个链条重新变得合理，但是区块链会防止这种情况发生，它引入了<strong>工作量证明机制（POW）</strong></p>
-<p>工作量证明机制（POW）：他会根据你的工作量来进行相应的评估动作</p>
-<p>举例为游戏，工作量=经验、验证工作量=升级按钮（工作量证明机制），你需要一万的经验值才能升级，那么如果你开挂了，经验值可以改成2倍获取，那么这个工作量证明机制会将经验动态调整为2倍也就是二万才能升级，以此来维持所付出多少就有多少回报的稳定</p>
-<p>比如挖矿就是利用工作量证明机制，矿工不断的搜寻区块头部的哈希然后打包交易数据并且做到全网广播，然后由其他矿工对其数据加以验证，在确认无误后将其留存上链，然后重复这些动作的过程称为挖矿，而通过挖矿获得记账的权利以及奖励</p>
-<p>以下是<code>python3</code>简单验证头部哈希的代码</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"><span class="keyword">from</span> hashlib <span class="keyword">import</span> md5</span><br><span class="line"></span><br><span class="line">i = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    i = i+<span class="number">1</span></span><br><span class="line">    msgx = <span class="string">&#x27;ctl&#x27;</span></span><br><span class="line">    msg = <span class="string">&#x27;&#x27;&#x27;&#123;msg&#125;&#123;i&#125;&#x27;&#x27;&#x27;</span>.<span class="built_in">format</span>(msg=msgx,i=i).encode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line">    hash_mgs = md5(msg).hexdigest()</span><br><span class="line">    <span class="keyword">if</span> hash_mgs[<span class="number">0</span>:<span class="number">5</span>] == <span class="string">&#x27;00000&#x27;</span>:</span><br><span class="line">        <span class="built_in">print</span>(msg,hash_mgs)</span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220513205211175.png" alt="image-20220513205211175"></p>
-<p>可以看到，光验证前五位00000的时候都到了26万次验证，那如果是10位或者其他会更复杂，这也就要求了挖矿得有强大的算力</p>
-<p><strong>P2P点对点网络</strong></p>
-<p>区块链还引入了这一个共识机制，比如说我创建了一个区块，会对全部人进行广播，来验证这个区块是否被篡改，只有全部人达到共识（验证成功）才会加入到这个链当中</p>
-<h2 id="python搭建一个简单易懂的区块链">python搭建一个简单易懂的区块链</h2>
-<p>区块链的基本实现功能：</p>
-<p>1、区块：一个新的区块链它会将自己数据 加上 上一个区块的哈希值为自己本身的数据哈希值（<code>hash = sha256(data+上一个区块哈希值)</code>）</p>
-<p>2、链：它本身是一个数组，由区块连成一条链</p>
-<p>每一个链生成的时候有一个祖先区块</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sha256</span>(<span class="params">dataNeedSha</span>):</span><br><span class="line">    sha256 = hashlib.sha256()</span><br><span class="line">    sha256.update(dataNeedSha.encode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br><span class="line">    <span class="keyword">return</span> sha256.hexdigest()</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">存储的数据</span></span><br><span class="line"><span class="string">1、之前的区块链</span></span><br><span class="line"><span class="string">2、自己的哈希值 它是由存储在区块里的信息算出来的（data+之前区块链的哈希值）</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Block</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self,datastr,previousHash</span>):</span><br><span class="line">        self.datastr = datastr <span class="comment"># 区块本身数据</span></span><br><span class="line">        self.previousHash = previousHash <span class="comment"># 上一个区块的哈希值</span></span><br><span class="line">        self.<span class="built_in">hash</span> = self.computeHash <span class="comment"># 区块本身数据的哈希值</span></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">computeHash</span>(<span class="params">self</span>): <span class="comment"># 区块本身数据的哈希值为sha256(data+上一个哈希值)</span></span><br><span class="line">        <span class="comment"># print(self.previousHash,self.datastr)</span></span><br><span class="line">        strData = self.datastr+self.previousHash</span><br><span class="line">        <span class="keyword">return</span> sha256(strData)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">ShowBlock</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(&#123;<span class="string">&#x27;data&#x27;</span>: self.datastr, <span class="string">&#x27;previousHash&#x27;</span>: self.previousHash, <span class="string">&#x27;hash&#x27;</span>: self.<span class="built_in">hash</span>&#125;)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">区块的链</span></span><br><span class="line"><span class="string">1、生成祖先区块</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Chain</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        self.chain = [self.bigBang]</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">bigBang</span>(<span class="params">self</span>):</span><br><span class="line">        genesisBlock = Block(<span class="string">&#x27;我是祖先区块&#x27;</span>,<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">        <span class="keyword">return</span> genesisBlock</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">getLastBlockHash</span>(<span class="params">self</span>): <span class="comment"># 获取最后一个区块的哈希值，用于添加到链中当上一个区块的哈希值</span></span><br><span class="line">        <span class="keyword">return</span> self.chain[ <span class="built_in">len</span>(self.chain)-<span class="number">1</span> ].<span class="built_in">hash</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">ShowChain</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> self.chain:</span><br><span class="line">            i.ShowBlock()</span><br><span class="line">    <span class="comment"># 添加区块到链上</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">addBlockToChain</span>(<span class="params">self,newBlock</span>):</span><br><span class="line">        <span class="comment"># 1、首先找到上一个区块的哈希值然后传入到Block类的previousHash</span></span><br><span class="line">        newBlock.previousHash = self.getLastBlockHash</span><br><span class="line">        newBlock.<span class="built_in">hash</span> = newBlock.computeHash</span><br><span class="line">        self.chain.append(newBlock)</span><br><span class="line">    <span class="comment"># 验证当前的链是否合法</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">validateChain</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="comment"># 1、验证区块的哈希值和他的previousHash是否相同</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(self.chain) == <span class="number">1</span>: <span class="comment"># 如果区块数组只有一个区块，即表示是刚新建的，不存在篡改返回True即可</span></span><br><span class="line">            <span class="comment"># 上一个注释如果觉得不够严谨也可以验证一下</span></span><br><span class="line">            <span class="keyword">if</span> self.chain[<span class="number">0</span>].<span class="built_in">hash</span> == self.chain[<span class="number">0</span>].computeHash:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="comment"># 2、self.chian[1]是第二个区块开始</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(self.chain)):</span><br><span class="line">            <span class="keyword">if</span> self.chain[i].<span class="built_in">hash</span> != self.chain[i].computeHash:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&#x27;数据被篡改&#x27;</span>)</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            <span class="keyword">if</span> self.chain[i].previousHash != self.chain[i-<span class="number">1</span>].<span class="built_in">hash</span>:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&#x27;前后数据链断裂&#x27;</span>)</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">shoulianBlock1 = Block(<span class="string">&#x27;转账100元&#x27;</span>,<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">shoulianBlock2 = Block(<span class="string">&#x27;转账200元&#x27;</span>,<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">shoulianBlock3 = Block(<span class="string">&#x27;转账300元&#x27;</span>,<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">shoulianChain = Chain()</span><br><span class="line">shoulianChain.addBlockToChain(shoulianBlock1)</span><br><span class="line">shoulianChain.addBlockToChain(shoulianBlock2)</span><br><span class="line">shoulianChain.addBlockToChain(shoulianBlock3)</span><br><span class="line">shoulianChain.chain[<span class="number">1</span>].datastr = <span class="string">&#x27;转账33300元&#x27;</span> <span class="comment"># 尝试篡改账本为转账1000元 可以看到是不行的 因为这里只是改了他的data 并没有改computeHash值</span></span><br><span class="line"><span class="comment"># 尝试修正computeHash</span></span><br><span class="line">shoulianChain.chain[<span class="number">1</span>].<span class="built_in">hash</span> = shoulianChain.chain[<span class="number">1</span>].computeHash</span><br><span class="line">shoulianChain.ShowChain()</span><br><span class="line"><span class="built_in">print</span>(shoulianChain.validateChain())</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Web3</category>
-      </categories>
-      <tags>
-        <tag>区块链</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>合约溢出漏洞</title>
     <url>/2022/06/09/%E5%90%88%E7%BA%A6%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E/</url>
     <content><![CDATA[<h3 id="1、加法溢出">1、加法溢出</h3>
@@ -207,6 +207,135 @@
       <tags>
         <tag>合约安全</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>均线实战</title>
+    <url>/2023/04/18/%E5%9D%87%E7%BA%BF%E5%AE%9E%E6%88%98/</url>
+    <content><![CDATA[<h2 id="均线">均线</h2>
+<h3 id="确立趋势">确立趋势</h3>
+<blockquote>
+<p>书中的三根趋势线分别是5日，10日，55日均线</p>
+</blockquote>
+<p><strong>做空趋势</strong>：当多根均线尤其是长期均线成<strong>空头排列</strong>（<strong>指的是价格在下，以上依次分别为短期线、中期线、长期线</strong>）的时候是空头趋势，如果成空头整齐排序则往往是强势空头趋势，空头趋势尽量<strong>逢高做空，不要做多</strong>。</p>
+<p><strong>做多趋势</strong>：当多根均线尤其是长期均线呈多头排列的时候是多头趋势，如果成多头整齐排列往往是强势多头趋势，多头趋势最好<strong>逢低做多，不要做空</strong></p>
+<p><u>注意：虽然短周期均线（5日，10日）可能向下走，但始终无法突破长周期线（55日），这种情况下。我们仍认为趋势没有改变</u></p>
+<h4 id="均线特点">均线特点</h4>
+<ol>
+<li>均线都有<strong>压力</strong>（<strong>指股价上涨过程中可能遇到压力，从而出现价格反转下跌的价位</strong>）和<strong>支撑</strong>（<strong>指股价下跌过程中可能遇到的支撑，从而出现价格止跌回稳的价位。</strong>）作用</li>
+<li><strong>均线总是合久必分，分久必合</strong></li>
+</ol>
+<h5 id="均线的压力和支撑作用">均线的压力和支撑作用</h5>
+<p>MA5，也就是我们常说的5日均线，就是股票5天的成交价格或指数的平均值。在股价上涨的时候，MA5起到支撑的作用，价位触及5日均线就会反弹上涨。当股价跌破MA5的时候，五日均线就变成了压力线，涨到压力位就很难再涨上去了。</p>
+<h5 id="合久必分，分久必合">合久必分，分久必合</h5>
+<p>当均线与均线互相靠近的时候会<strong>产生排斥力，靠的越近、时间越久、排斥力就越大</strong>，当他们互相远离的时候就会<strong>产生吸引力，离得越远、时间越久、吸引力就越大</strong></p>
+<p>当多根均线互相缠绕在一起或者粘合在一起的时候，叫均线粘合，粘合的过程是一个积聚力量的过程。粘合一但炸开，就会产生很大的爆发力，会将均线快速散开，价格不是加速上涨就是加速下跌。</p>
+<h3 id="均线技巧">均线技巧</h3>
+<h4 id="见底信号的移动平均线，做多">见底信号的移动平均线，做多</h4>
+<ol>
+<li>比特币交叉和银山谷</li>
+<li>金山谷</li>
+<li>首次粘合向上散形和再次粘合向上散形</li>
+<li>加速下跌和蛟龙出海</li>
+</ol>
+<h5 id="比特币交叉和银山谷、金山谷">比特币交叉和银山谷、金山谷</h5>
+<p>比特币交叉：出现在上涨初期，由两根移动平均线组成，<strong>一根短周期的均线由下向上穿过一根长周期的均线，并且长周期均线是向上移动的</strong></p>
+<h6 id="银山谷：">银山谷：</h6>
+<ul>
+<li>
+<p>ema5：红线</p>
+</li>
+<li>
+<p>ema10：黄线</p>
+</li>
+<li>
+<p>ema55：蓝线</p>
+</li>
+</ul>
+<p>价格经过一段时间下跌整理后，ema5均线先后上穿中期均线(ema10)和长期均线(ema55)，中期均线(ema10)也上穿长期均线(ema55)，形成一个尖头朝上的不规则三角形</p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418211406688.png" alt="image-20230418211406688"></p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418211801563.png" alt="image-20230418211801563"></p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418212016215.png" alt="image-20230418212016215"></p>
+<h6 id="金山谷：">金山谷：</h6>
+<p>金山谷一段出现在银山谷之后，并且金山谷的不规则尖头向上三角形与银山谷是相同的，金山谷可处于与银山谷相近的位置，也可高于银山谷</p>
+<h6 id="两个山谷总结">两个山谷总结</h6>
+<p>金山谷买入信号的可靠性要比银山谷强，因为金山谷是对银山谷做多信号的再一次确认</p>
+<h5 id="首次粘合向上发散形和再次粘合向上发散形">首次粘合向上发散形和再次粘合向上发散形</h5>
+<h6 id="形状：">形状：</h6>
+<p>首次粘合向上发散形可以出现在下跌后横盘末期，也可以出现在上涨后横盘末期，几根粘合在一起的均线同时以喷射形态向上发散。</p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418215012743.png" alt="image-20230418215012743"></p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418215059176.png" alt="image-20230418215059176"></p>
+<blockquote>
+<p>注意：粘合向上发散初期买进风险小，越到后面风险越大，当均线发散时，距离越大回调风险越大，例如5日均线与55日均线距离大，一般都会回调</p>
+</blockquote>
+<p>首次粘合向上散形的出现说明第一次向上发散，是过去积弱太久或主力故意打压，经过调整后多方又发动一次进攻，即再次发散，这是投资者买入的机会，并且成功的机会很大</p>
+<h5 id="加速下跌和蛟龙出海">加速下跌和蛟龙出海</h5>
+<h6 id="加速下跌">加速下跌</h6>
+<p>加速下跌出现在下跌后期，在加速下跌之前，<strong>均线系统缓慢或匀速</strong>下跌；在加速下跌时，短、中、长期均线的距离越来越大</p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418220804451.png" alt="image-20230418220804451"></p>
+<p>技术面来说，加速下跌形是一种止跌见低信号，表示价格的下跌能量一下子得到较充分的释放，因而出现止跌现象</p>
+<p>出现这种情况再加以下3个条件也算是见低，可以轻仓做多</p>
+<ul>
+<li>成交量增加：在价格加速下跌的过程中，成交量开始增加，这可能暗示着卖方力量开始减弱，市场情绪也开始回升。</li>
+<li>超卖指标：例如RSI（相对强弱指标）等指标出现超卖信号，暗示价格可能到达一个支撑位，下跌能量得到释放。</li>
+<li>蜡烛图形态：例如锤子线、倒锤子线等底部反转形态出现，暗示价格可能到达支撑位，可能出现反转。</li>
+</ul>
+<h6 id="蛟龙出海">蛟龙出海</h6>
+<p>特征：拉出大阳线，把短、中、长期均线全部吞没，如图显示</p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418221639203.png" alt="image-20230418221639203"></p>
+<blockquote>
+<p>出现蛟龙出海是明显的见底信号，可以轻仓买进，但是最好在拉出大阳线后多观察以下，如果重心向上移则可以加码追多。</p>
+</blockquote>
+<h4 id="见顶信号的移动平均线，做空">见顶信号的移动平均线，做空</h4>
+<ul>
+<li>死亡交叉、死亡谷</li>
+<li>首次粘合向下发散形和再次粘合向下发散形</li>
+<li>加速上涨和断头铡刀</li>
+</ul>
+<h5 id="死亡交叉">死亡交叉</h5>
+<blockquote>
+<p>特征：</p>
+<p><strong>死亡交叉</strong>出现在<strong>下跌初期，由两根移动平均线组成，一根时间短的均线由上向下穿过一根时间长的均线，并且是时间长的均线向下移动。一般出现在价格经过大幅度上涨后出现死亡交叉。这是一个明显的见顶信号，如果在<em>周K线和月K线出现死亡交叉，见底信号就更明显</em></strong></p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419161916706.png" alt="image-20230419161916706"></p>
+<h5 id="死亡谷">死亡谷</h5>
+<blockquote>
+<p>特征：</p>
+<p>死亡谷出现在<strong>下跌初期，由3根移动平均线交叉组成，短期均线下穿中期、长期均线中期均线下穿长期均线，形成一个尖头向下的不规则三角形</strong></p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419164132860.png" alt="image-20230419164132860"></p>
+<p>在<code>1HOUR</code>周期线中的<code>ETHUSDT</code></p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419164355516.png" alt="image-20230419164355516"></p>
+<p><strong>在死亡谷形成过程中，尖头向下的不规则三角形的出现，表明空方力量积聚了相当大的杀跌能量，是一个见顶信号，出现此信号以做空为主，死亡谷见顶信号比死亡交叉强</strong></p>
+<blockquote>
+<p>做空参考，比如出现<strong>死亡谷</strong>后再出现<strong>多次死亡交叉</strong>可以陆续逢高做空，<strong>如果价格站稳了10日均线以上就要注意止损了</strong></p>
+</blockquote>
+<h5 id="首次粘合向下发散形和再次粘合向下发散形">首次粘合向下发散形和再次粘合向下发散形</h5>
+<blockquote>
+<p>特征：</p>
+<p>空投排列出现在<strong>跌势中，由3根移动平均线组成，最上面一根是长期均线，中间一根是中期均线，最下面一根是短期均线，并且3根均线呈下圆弧状，在首次粘合向下发散形中，粘合时间越长向下发散的力度越大，还要注意向下发散时均线是否整齐排列</strong></p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419190706629.png" alt="image-20230419190706629"></p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419191147394.png" alt="image-20230419191147394"></p>
+<h5 id="加速上涨">加速上涨</h5>
+<blockquote>
+<p>特征：</p>
+<p>加速上涨出现在上涨后期，<strong>在加速上涨之前，均线系统缓慢或匀速上涨；</strong></p>
+<p>在加速上涨时，短期均线和中期、长期均线的距离越拉越大。</p>
+<p>在技术上来说，这种现象是一种止涨见顶现象，可以等均线系统走好后轻仓做多</p>
+</blockquote>
+<h5 id="断头铡刀">断头铡刀</h5>
+<blockquote>
+<p>特征：</p>
+<p>断头铡刀出现在<strong>上涨后期或高位盘整期</strong>，一根大阴线如一把刀，一下子把短、中、长期均线切断，收盘价收在所有短、中、长均线下方，短线客见此信号应该抛开离场。</p>
+<p>中长线需要关注60日和120日均线，如果这两条均线都被断头铡刀就需要止损离场了</p>
+</blockquote>
+<p>如图显示，黑线是3根均线，红的是跌的实体，已经超过了这3根均线</p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419195042879.png" alt="image-20230419195042879"></p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419203916894.png" alt="image-20230419203916894"></p>
+]]></content>
+      <categories>
+        <category>k线学习</category>
+      </categories>
   </entry>
   <entry>
     <title>Solidity学习手册</title>
@@ -627,134 +756,5 @@
         <tag>Solidity</tag>
         <tag>智能合约</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>均线实战</title>
-    <url>/2023/04/18/%E5%9D%87%E7%BA%BF%E5%AE%9E%E6%88%98/</url>
-    <content><![CDATA[<h2 id="均线">均线</h2>
-<h3 id="确立趋势">确立趋势</h3>
-<blockquote>
-<p>书中的三根趋势线分别是5日，10日，55日均线</p>
-</blockquote>
-<p><strong>做空趋势</strong>：当多根均线尤其是长期均线成<strong>空头排列</strong>（<strong>指的是价格在下，以上依次分别为短期线、中期线、长期线</strong>）的时候是空头趋势，如果成空头整齐排序则往往是强势空头趋势，空头趋势尽量<strong>逢高做空，不要做多</strong>。</p>
-<p><strong>做多趋势</strong>：当多根均线尤其是长期均线呈多头排列的时候是多头趋势，如果成多头整齐排列往往是强势多头趋势，多头趋势最好<strong>逢低做多，不要做空</strong></p>
-<p><u>注意：虽然短周期均线（5日，10日）可能向下走，但始终无法突破长周期线（55日），这种情况下。我们仍认为趋势没有改变</u></p>
-<h4 id="均线特点">均线特点</h4>
-<ol>
-<li>均线都有<strong>压力</strong>（<strong>指股价上涨过程中可能遇到压力，从而出现价格反转下跌的价位</strong>）和<strong>支撑</strong>（<strong>指股价下跌过程中可能遇到的支撑，从而出现价格止跌回稳的价位。</strong>）作用</li>
-<li><strong>均线总是合久必分，分久必合</strong></li>
-</ol>
-<h5 id="均线的压力和支撑作用">均线的压力和支撑作用</h5>
-<p>MA5，也就是我们常说的5日均线，就是股票5天的成交价格或指数的平均值。在股价上涨的时候，MA5起到支撑的作用，价位触及5日均线就会反弹上涨。当股价跌破MA5的时候，五日均线就变成了压力线，涨到压力位就很难再涨上去了。</p>
-<h5 id="合久必分，分久必合">合久必分，分久必合</h5>
-<p>当均线与均线互相靠近的时候会<strong>产生排斥力，靠的越近、时间越久、排斥力就越大</strong>，当他们互相远离的时候就会<strong>产生吸引力，离得越远、时间越久、吸引力就越大</strong></p>
-<p>当多根均线互相缠绕在一起或者粘合在一起的时候，叫均线粘合，粘合的过程是一个积聚力量的过程。粘合一但炸开，就会产生很大的爆发力，会将均线快速散开，价格不是加速上涨就是加速下跌。</p>
-<h3 id="均线技巧">均线技巧</h3>
-<h4 id="见底信号的移动平均线，做多">见底信号的移动平均线，做多</h4>
-<ol>
-<li>比特币交叉和银山谷</li>
-<li>金山谷</li>
-<li>首次粘合向上散形和再次粘合向上散形</li>
-<li>加速下跌和蛟龙出海</li>
-</ol>
-<h5 id="比特币交叉和银山谷、金山谷">比特币交叉和银山谷、金山谷</h5>
-<p>比特币交叉：出现在上涨初期，由两根移动平均线组成，<strong>一根短周期的均线由下向上穿过一根长周期的均线，并且长周期均线是向上移动的</strong></p>
-<h6 id="银山谷：">银山谷：</h6>
-<ul>
-<li>
-<p>ema5：红线</p>
-</li>
-<li>
-<p>ema10：黄线</p>
-</li>
-<li>
-<p>ema55：蓝线</p>
-</li>
-</ul>
-<p>价格经过一段时间下跌整理后，ema5均线先后上穿中期均线(ema10)和长期均线(ema55)，中期均线(ema10)也上穿长期均线(ema55)，形成一个尖头朝上的不规则三角形</p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418211406688.png" alt="image-20230418211406688"></p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418211801563.png" alt="image-20230418211801563"></p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418212016215.png" alt="image-20230418212016215"></p>
-<h6 id="金山谷：">金山谷：</h6>
-<p>金山谷一段出现在银山谷之后，并且金山谷的不规则尖头向上三角形与银山谷是相同的，金山谷可处于与银山谷相近的位置，也可高于银山谷</p>
-<h6 id="两个山谷总结">两个山谷总结</h6>
-<p>金山谷买入信号的可靠性要比银山谷强，因为金山谷是对银山谷做多信号的再一次确认</p>
-<h5 id="首次粘合向上发散形和再次粘合向上发散形">首次粘合向上发散形和再次粘合向上发散形</h5>
-<h6 id="形状：">形状：</h6>
-<p>首次粘合向上发散形可以出现在下跌后横盘末期，也可以出现在上涨后横盘末期，几根粘合在一起的均线同时以喷射形态向上发散。</p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418215012743.png" alt="image-20230418215012743"></p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418215059176.png" alt="image-20230418215059176"></p>
-<blockquote>
-<p>注意：粘合向上发散初期买进风险小，越到后面风险越大，当均线发散时，距离越大回调风险越大，例如5日均线与55日均线距离大，一般都会回调</p>
-</blockquote>
-<p>首次粘合向上散形的出现说明第一次向上发散，是过去积弱太久或主力故意打压，经过调整后多方又发动一次进攻，即再次发散，这是投资者买入的机会，并且成功的机会很大</p>
-<h5 id="加速下跌和蛟龙出海">加速下跌和蛟龙出海</h5>
-<h6 id="加速下跌">加速下跌</h6>
-<p>加速下跌出现在下跌后期，在加速下跌之前，<strong>均线系统缓慢或匀速</strong>下跌；在加速下跌时，短、中、长期均线的距离越来越大</p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418220804451.png" alt="image-20230418220804451"></p>
-<p>技术面来说，加速下跌形是一种止跌见低信号，表示价格的下跌能量一下子得到较充分的释放，因而出现止跌现象</p>
-<p>出现这种情况再加以下3个条件也算是见低，可以轻仓做多</p>
-<ul>
-<li>成交量增加：在价格加速下跌的过程中，成交量开始增加，这可能暗示着卖方力量开始减弱，市场情绪也开始回升。</li>
-<li>超卖指标：例如RSI（相对强弱指标）等指标出现超卖信号，暗示价格可能到达一个支撑位，下跌能量得到释放。</li>
-<li>蜡烛图形态：例如锤子线、倒锤子线等底部反转形态出现，暗示价格可能到达支撑位，可能出现反转。</li>
-</ul>
-<h6 id="蛟龙出海">蛟龙出海</h6>
-<p>特征：拉出大阳线，把短、中、长期均线全部吞没，如图显示</p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418221639203.png" alt="image-20230418221639203"></p>
-<blockquote>
-<p>出现蛟龙出海是明显的见底信号，可以轻仓买进，但是最好在拉出大阳线后多观察以下，如果重心向上移则可以加码追多。</p>
-</blockquote>
-<h4 id="见顶信号的移动平均线，做空">见顶信号的移动平均线，做空</h4>
-<ul>
-<li>死亡交叉、死亡谷</li>
-<li>首次粘合向下发散形和再次粘合向下发散形</li>
-<li>加速上涨和断头铡刀</li>
-</ul>
-<h5 id="死亡交叉">死亡交叉</h5>
-<blockquote>
-<p>特征：</p>
-<p><strong>死亡交叉</strong>出现在<strong>下跌初期，由两根移动平均线组成，一根时间短的均线由上向下穿过一根时间长的均线，并且是时间长的均线向下移动。一般出现在价格经过大幅度上涨后出现死亡交叉。这是一个明显的见顶信号，如果在<em>周K线和月K线出现死亡交叉，见底信号就更明显</em></strong></p>
-</blockquote>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419161916706.png" alt="image-20230419161916706"></p>
-<h5 id="死亡谷">死亡谷</h5>
-<blockquote>
-<p>特征：</p>
-<p>死亡谷出现在<strong>下跌初期，由3根移动平均线交叉组成，短期均线下穿中期、长期均线中期均线下穿长期均线，形成一个尖头向下的不规则三角形</strong></p>
-</blockquote>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419164132860.png" alt="image-20230419164132860"></p>
-<p>在<code>1HOUR</code>周期线中的<code>ETHUSDT</code></p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419164355516.png" alt="image-20230419164355516"></p>
-<p><strong>在死亡谷形成过程中，尖头向下的不规则三角形的出现，表明空方力量积聚了相当大的杀跌能量，是一个见顶信号，出现此信号以做空为主，死亡谷见顶信号比死亡交叉强</strong></p>
-<blockquote>
-<p>做空参考，比如出现<strong>死亡谷</strong>后再出现<strong>多次死亡交叉</strong>可以陆续逢高做空，<strong>如果价格站稳了10日均线以上就要注意止损了</strong></p>
-</blockquote>
-<h5 id="首次粘合向下发散形和再次粘合向下发散形">首次粘合向下发散形和再次粘合向下发散形</h5>
-<blockquote>
-<p>特征：</p>
-<p>空投排列出现在<strong>跌势中，由3根移动平均线组成，最上面一根是长期均线，中间一根是中期均线，最下面一根是短期均线，并且3根均线呈下圆弧状，在首次粘合向下发散形中，粘合时间越长向下发散的力度越大，还要注意向下发散时均线是否整齐排列</strong></p>
-</blockquote>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419190706629.png" alt="image-20230419190706629"></p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419191147394.png" alt="image-20230419191147394"></p>
-<h5 id="加速上涨">加速上涨</h5>
-<blockquote>
-<p>特征：</p>
-<p>加速上涨出现在上涨后期，<strong>在加速上涨之前，均线系统缓慢或匀速上涨；</strong></p>
-<p>在加速上涨时，短期均线和中期、长期均线的距离越拉越大。</p>
-<p>在技术上来说，这种现象是一种止涨见顶现象，可以等均线系统走好后轻仓做多</p>
-</blockquote>
-<h5 id="断头铡刀">断头铡刀</h5>
-<blockquote>
-<p>特征：</p>
-<p>断头铡刀出现在<strong>上涨后期或高位盘整期</strong>，一根大阴线如一把刀，一下子把短、中、长期均线切断，收盘价收在所有短、中、长均线下方，短线客见此信号应该抛开离场。</p>
-<p>中长线需要关注60日和120日均线，如果这两条均线都被断头铡刀就需要止损离场了</p>
-</blockquote>
-<p>如图显示，黑线是3根均线，红的是跌的实体，已经超过了这3根均线</p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419195042879.png" alt="image-20230419195042879"></p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419203916894.png" alt="image-20230419203916894"></p>
-]]></content>
-      <categories>
-        <category>k线学习</category>
-      </categories>
   </entry>
 </search>
