@@ -33,40 +33,6 @@
       </tags>
   </entry>
   <entry>
-    <title>合约溢出漏洞</title>
-    <url>/2022/06/09/%E5%90%88%E7%BA%A6%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E/</url>
-    <content><![CDATA[<h3 id="1、加法溢出">1、加法溢出</h3>
-<p><code>uint256</code>的值是<code>2**256</code></p>
-<p>如果输入的值是<code>2**256-1</code>然后在加任何一个大于0的无符号数字就会溢出变成<code>0</code></p>
-<p>比如<code>2**256-1</code> + <code>1</code> = <code>0</code></p>
-<p><code>2**256-1</code> + <code>2</code> = <code>1</code></p>
-<h3 id="2、减法溢出">2、减法溢出</h3>
-<p>如果<code>uint256</code>类型的变量是等于<code>0</code>的数，那么此时再减去一个小于<code>0</code>的数就会变成<code>2**256-1</code>的值</p>
-<h3 id="3、乘法溢出">3、乘法溢出</h3>
-<p>如果<code>uint256</code>类型的变量超过它的最大值(<code>2**255 - 1</code>)，最后就会回绕变成<code>0</code></p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// SPDX-License-Identifier: MIT  </span></span><br><span class="line">pragma solidity ^<span class="number">0.4</span><span class="number">.25</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="variable constant_">POC</span>&#123;</span><br><span class="line">    uint256 public _addnum;</span><br><span class="line">    uint256 public _subnum;</span><br><span class="line">    uint256 public _mulnum;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">add_overflow</span>(<span class="params"></span>)&#123; <span class="comment">// 加法溢出</span></span><br><span class="line">        uint256 max = <span class="number">2</span>**<span class="number">256</span> - <span class="number">1</span>;</span><br><span class="line">        _addnum = max + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">sub_underflow</span>(<span class="params"></span>)&#123; <span class="comment">// 减法溢出</span></span><br><span class="line">        uint256 min = <span class="number">0</span>;</span><br><span class="line">        _subnum = min - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">mul_overflow</span>(<span class="params"></span>)&#123; <span class="comment">// 乘法溢出</span></span><br><span class="line">        uint256 mul = <span class="number">2</span> ** <span class="number">255</span>;</span><br><span class="line">        _mulnum = mul * <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609110929837.png" alt="image-20220609110929837"></p>
-<h2 id="实际攻击例子">实际攻击例子</h2>
-<h3 id="BEC-溢出案例">BEC 溢出案例</h3>
-<p><a href="https://etherscan.io/tx/0xad89ff16fd1ebe3a0a7cf4ed282302c06626c1af33221ebe0d3a470aba4a660f">https://etherscan.io/tx/0xad89ff16fd1ebe3a0a7cf4ed282302c06626c1af33221ebe0d3a470aba4a660f</a></p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609111121193.png" alt="image-20220609111121193"></p>
-<p>合约地址：<a href="https://eth.tokenview.com/cn/address/0xc5d105e63711398af9bbff092d4b6769c82f793d%EF%BC%8C%E4%BB%A3%E7%A0%81%E5%9C%A8%E9%87%8C%E9%9D%A2%E8%8E%B7%E5%8F%96%E6%94%BE">https://eth.tokenview.com/cn/address/0xc5d105e63711398af9bbff092d4b6769c82f793d，代码在里面获取放</a><code>remix</code>里跑一下就行</p>
-<p>乘法溢出点在于他的<code>batchTransfer</code>函数</p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609113059622.png" alt="image-20220609113059622"></p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">batchTransfer</span>(<span class="params">address[] _receivers, uint256 _value</span>) public whenNotPaused returns (bool) &#123;</span><br><span class="line">  uint cnt = _receivers.<span class="property">length</span>;</span><br><span class="line">  uint256 amount = <span class="title function_">uint256</span>(cnt) * _value; <span class="comment">// 溢出点在这</span></span><br><span class="line">  <span class="built_in">require</span>(cnt &gt; <span class="number">0</span> &amp;&amp; cnt &lt;= <span class="number">20</span>); <span class="comment">// 这个cnt是地址的长度，最小不能小于0，最大不能大于20个地址</span></span><br><span class="line">  <span class="built_in">require</span>(_value &gt; <span class="number">0</span> &amp;&amp; balances[msg.<span class="property">sender</span>] &gt;= amount); <span class="comment">// 传入的_value值必须大于0 并且 转账的用户余额要大于或等于当前转账数</span></span><br><span class="line"></span><br><span class="line">  balances[msg.<span class="property">sender</span>] = balances[msg.<span class="property">sender</span>].<span class="title function_">sub</span>(amount);</span><br><span class="line">  <span class="keyword">for</span> (uint i = <span class="number">0</span>; i &lt; cnt; i++) &#123;</span><br><span class="line">      balances[_receivers[i]] = balances[_receivers[i]].<span class="title function_">add</span>(_value);</span><br><span class="line">      <span class="title class_">Transfer</span>(msg.<span class="property">sender</span>, _receivers[i], _value);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>部署后在<code>_receivers</code>里放<code>[&quot;0x617F2E2fD72FD9D5503197092aC168c91465E7f2&quot;,&quot;0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB&quot;]</code></p>
-<p>在<code>_value</code>里放 <code>&quot;57896044618658097711785492504343953926634992332820282019728792003956564819968&quot;</code>（2**255的值）</p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609113315782.png" alt="image-20220609113315782"></p>
-<p>然后就可以看到 通过溢出 我只需要耗费<code>0</code>的代币就可以获取到<code>57896044618658097711785492504343953926634992332820282019728792003956564819968</code>个代币</p>
-]]></content>
-      <categories>
-        <category>Web3</category>
-      </categories>
-      <tags>
-        <tag>合约安全</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>web3.py</title>
     <url>/2022/05/19/web3-py/</url>
     <content><![CDATA[<p>学习来自：<a href="https://gitchat.csdn.net/columnTopic/5ae2846b4edf1d4548768330">https://gitchat.csdn.net/columnTopic/5ae2846b4edf1d4548768330</a></p>
@@ -207,125 +173,6 @@
       <tags>
         <tag>区块链</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>均线实战</title>
-    <url>/2023/04/18/%E5%9D%87%E7%BA%BF%E5%AE%9E%E6%88%98/</url>
-    <content><![CDATA[<h2 id="均线">均线</h2>
-<h3 id="确立趋势">确立趋势</h3>
-<blockquote>
-<p>书中的三根趋势线分别是5日，10日，55日均线</p>
-</blockquote>
-<p><strong>做空趋势</strong>：当多根均线尤其是长期均线成<strong>空头排列</strong>（<strong>指的是价格在下，以上依次分别为短期线、中期线、长期线</strong>）的时候是空头趋势，如果成空头整齐排序则往往是强势空头趋势，空头趋势尽量<strong>逢高做空，不要做多</strong>。</p>
-<p><strong>做多趋势</strong>：当多根均线尤其是长期均线呈多头排列的时候是多头趋势，如果成多头整齐排列往往是强势多头趋势，多头趋势最好<strong>逢低做多，不要做空</strong></p>
-<p><u>注意：虽然短周期均线（5日，10日）可能向下走，但始终无法突破长周期线（55日），这种情况下。我们仍认为趋势没有改变</u></p>
-<h4 id="均线特点">均线特点</h4>
-<ol>
-<li>均线都有<strong>压力</strong>（<strong>指股价上涨过程中可能遇到压力，从而出现价格反转下跌的价位</strong>）和<strong>支撑</strong>（<strong>指股价下跌过程中可能遇到的支撑，从而出现价格止跌回稳的价位。</strong>）作用</li>
-<li><strong>均线总是合久必分，分久必合</strong></li>
-</ol>
-<h5 id="均线的压力和支撑作用">均线的压力和支撑作用</h5>
-<p>MA5，也就是我们常说的5日均线，就是股票5天的成交价格或指数的平均值。在股价上涨的时候，MA5起到支撑的作用，价位触及5日均线就会反弹上涨。当股价跌破MA5的时候，五日均线就变成了压力线，涨到压力位就很难再涨上去了。</p>
-<h5 id="合久必分，分久必合">合久必分，分久必合</h5>
-<p>当均线与均线互相靠近的时候会<strong>产生排斥力，靠的越近、时间越久、排斥力就越大</strong>，当他们互相远离的时候就会<strong>产生吸引力，离得越远、时间越久、吸引力就越大</strong></p>
-<p>当多根均线互相缠绕在一起或者粘合在一起的时候，叫均线粘合，粘合的过程是一个积聚力量的过程。粘合一但炸开，就会产生很大的爆发力，会将均线快速散开，价格不是加速上涨就是加速下跌。</p>
-<h3 id="均线技巧">均线技巧</h3>
-<h4 id="见底信号的移动平均线，做多">见底信号的移动平均线，做多</h4>
-<ol>
-<li>比特币交叉和银山谷</li>
-<li>金山谷</li>
-<li>首次粘合向上散形和再次粘合向上散形</li>
-<li>加速下跌和蛟龙出海</li>
-</ol>
-<h5 id="比特币交叉和银山谷、金山谷">比特币交叉和银山谷、金山谷</h5>
-<p>比特币交叉：出现在上涨初期，由两根移动平均线组成，<strong>一根短周期的均线由下向上穿过一根长周期的均线，并且长周期均线是向上移动的</strong></p>
-<h6 id="银山谷：">银山谷：</h6>
-<ul>
-<li>
-<p>ema5：红线</p>
-</li>
-<li>
-<p>ema10：黄线</p>
-</li>
-<li>
-<p>ema55：蓝线</p>
-</li>
-</ul>
-<p>价格经过一段时间下跌整理后，ema5均线先后上穿中期均线(ema10)和长期均线(ema55)，中期均线(ema10)也上穿长期均线(ema55)，形成一个尖头朝上的不规则三角形</p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418211406688.png" alt="image-20230418211406688"></p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418211801563.png" alt="image-20230418211801563"></p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418212016215.png" alt="image-20230418212016215"></p>
-<h6 id="金山谷：">金山谷：</h6>
-<p>金山谷一段出现在银山谷之后，并且金山谷的不规则尖头向上三角形与银山谷是相同的，金山谷可处于与银山谷相近的位置，也可高于银山谷</p>
-<h6 id="两个山谷总结">两个山谷总结</h6>
-<p>金山谷买入信号的可靠性要比银山谷强，因为金山谷是对银山谷做多信号的再一次确认</p>
-<h5 id="首次粘合向上发散形和再次粘合向上发散形">首次粘合向上发散形和再次粘合向上发散形</h5>
-<h6 id="形状：">形状：</h6>
-<p>首次粘合向上发散形可以出现在下跌后横盘末期，也可以出现在上涨后横盘末期，几根粘合在一起的均线同时以喷射形态向上发散。</p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418215012743.png" alt="image-20230418215012743"></p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418215059176.png" alt="image-20230418215059176"></p>
-<blockquote>
-<p>注意：粘合向上发散初期买进风险小，越到后面风险越大，当均线发散时，距离越大回调风险越大，例如5日均线与55日均线距离大，一般都会回调</p>
-</blockquote>
-<p>首次粘合向上散形的出现说明第一次向上发散，是过去积弱太久或主力故意打压，经过调整后多方又发动一次进攻，即再次发散，这是投资者买入的机会，并且成功的机会很大</p>
-<h5 id="加速下跌和蛟龙出海">加速下跌和蛟龙出海</h5>
-<h6 id="加速下跌">加速下跌</h6>
-<p>加速下跌出现在下跌后期，在加速下跌之前，<strong>均线系统缓慢或匀速</strong>下跌；在加速下跌时，短、中、长期均线的距离越来越大</p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418220804451.png" alt="image-20230418220804451"></p>
-<p>技术面来说，加速下跌形是一种止跌见低信号，表示价格的下跌能量一下子得到较充分的释放，因而出现止跌现象</p>
-<p>出现这种情况再加以下3个条件也算是见低，可以轻仓做多</p>
-<ul>
-<li>成交量增加：在价格加速下跌的过程中，成交量开始增加，这可能暗示着卖方力量开始减弱，市场情绪也开始回升。</li>
-<li>超卖指标：例如RSI（相对强弱指标）等指标出现超卖信号，暗示价格可能到达一个支撑位，下跌能量得到释放。</li>
-<li>蜡烛图形态：例如锤子线、倒锤子线等底部反转形态出现，暗示价格可能到达支撑位，可能出现反转。</li>
-</ul>
-<h6 id="蛟龙出海">蛟龙出海</h6>
-<p>特征：拉出大阳线，把短、中、长期均线全部吞没，如图显示</p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418221639203.png" alt="image-20230418221639203"></p>
-<blockquote>
-<p>出现蛟龙出海是明显的见底信号，可以轻仓买进，但是最好在拉出大阳线后多观察以下，如果重心向上移则可以加码追多。</p>
-</blockquote>
-<h4 id="见顶信号的移动平均线，做空">见顶信号的移动平均线，做空</h4>
-<ul>
-<li>死亡交叉、死亡谷</li>
-<li>首次粘合向下发散形和再次粘合向下发散形</li>
-<li>加速上涨和断头铡刀</li>
-</ul>
-<h5 id="死亡交叉">死亡交叉</h5>
-<p>特征：</p>
-<p><strong>死亡交叉</strong>出现在<strong>下跌初期，由两根移动平均线组成，一根时间短的均线由上向下穿过一根时间长的均线，并且是时间长的均线向下移动。一般出现在价格经过大幅度上涨后出现死亡交叉。这是一个明显的见顶信号，如果在<em>周K线和月K线出现死亡交叉，见底信号就更明显</em></strong></p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419161916706.png" alt="image-20230419161916706"></p>
-<h5 id="死亡谷">死亡谷</h5>
-<p>特征：</p>
-<p>死亡谷出现在<strong>下跌初期，由3根移动平均线交叉组成，短期均线下穿中期、长期均线中期均线下穿长期均线，形成一个尖头向下的不规则三角形</strong></p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419164132860.png" alt="image-20230419164132860"></p>
-<p>在<code>1HOUR</code>周期线中的<code>ETHUSDT</code></p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419164355516.png" alt="image-20230419164355516"></p>
-<p><strong>在死亡谷形成过程中，尖头向下的不规则三角形的出现，表明空方力量积聚了相当大的杀跌能量，是一个见顶信号，出现此信号以做空为主，死亡谷见顶信号比死亡交叉强</strong></p>
-<blockquote>
-<p>做空参考，比如出现<strong>死亡谷</strong>后再出现<strong>多次死亡交叉</strong>可以陆续逢高做空，<strong>如果价格站稳了10日均线以上就要注意止损了</strong></p>
-</blockquote>
-<h5 id="首次粘合向下发散形和再次粘合向下发散形">首次粘合向下发散形和再次粘合向下发散形</h5>
-<p>特征：</p>
-<p>空投排列出现在<strong>跌势中，由3根移动平均线组成，最上面一根是长期均线，中间一根是中期均线，最下面一根是短期均线，并且3根均线呈下圆弧状，在首次粘合向下发散形中，粘合时间越长向下发散的力度越大，还要注意向下发散时均线是否整齐排列</strong></p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419190706629.png" alt="image-20230419190706629"></p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419191147394.png" alt="image-20230419191147394"></p>
-<h5 id="加速上涨">加速上涨</h5>
-<p>特征：</p>
-<p>加速上涨出现在上涨后期，<strong>在加速上涨之前，均线系统缓慢或匀速上涨；</strong><br>
-在加速上涨时，短期均线和中期、长期均线的距离越拉越大。<br>
-在技术上来说，这种现象是一种止涨见顶现象，可以等均线系统走好后轻仓做多</p>
-<h5 id="断头铡刀">断头铡刀</h5>
-<p>特征：<br>
-断头铡刀出现在<strong>上涨后期或高位盘整期</strong>，一根大阴线如一把刀，一下子把短、中、长期均线切断，收盘价收在所有短、中、长均线下方，短线客见此信号应该抛开离场。<br>
-中长线需要关注60日和120日均线，如果这两条均线都被断头铡刀就需要止损离场了</p>
-<p>如图显示，黑线是3根均线，红的是跌的实体，已经超过了这3根均线</p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419195042879.png" alt="image-20230419195042879"></p>
-<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419203916894.png" alt="image-20230419203916894"></p>
-]]></content>
-      <categories>
-        <category>k线学习</category>
-      </categories>
   </entry>
   <entry>
     <title>Solidity学习手册</title>
@@ -746,5 +593,168 @@
         <tag>Solidity</tag>
         <tag>智能合约</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>合约溢出漏洞</title>
+    <url>/2022/06/09/%E5%90%88%E7%BA%A6%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E/</url>
+    <content><![CDATA[<h3 id="1、加法溢出">1、加法溢出</h3>
+<p><code>uint256</code>的值是<code>2**256</code></p>
+<p>如果输入的值是<code>2**256-1</code>然后在加任何一个大于0的无符号数字就会溢出变成<code>0</code></p>
+<p>比如<code>2**256-1</code> + <code>1</code> = <code>0</code></p>
+<p><code>2**256-1</code> + <code>2</code> = <code>1</code></p>
+<h3 id="2、减法溢出">2、减法溢出</h3>
+<p>如果<code>uint256</code>类型的变量是等于<code>0</code>的数，那么此时再减去一个小于<code>0</code>的数就会变成<code>2**256-1</code>的值</p>
+<h3 id="3、乘法溢出">3、乘法溢出</h3>
+<p>如果<code>uint256</code>类型的变量超过它的最大值(<code>2**255 - 1</code>)，最后就会回绕变成<code>0</code></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// SPDX-License-Identifier: MIT  </span></span><br><span class="line">pragma solidity ^<span class="number">0.4</span><span class="number">.25</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="variable constant_">POC</span>&#123;</span><br><span class="line">    uint256 public _addnum;</span><br><span class="line">    uint256 public _subnum;</span><br><span class="line">    uint256 public _mulnum;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">add_overflow</span>(<span class="params"></span>)&#123; <span class="comment">// 加法溢出</span></span><br><span class="line">        uint256 max = <span class="number">2</span>**<span class="number">256</span> - <span class="number">1</span>;</span><br><span class="line">        _addnum = max + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">sub_underflow</span>(<span class="params"></span>)&#123; <span class="comment">// 减法溢出</span></span><br><span class="line">        uint256 min = <span class="number">0</span>;</span><br><span class="line">        _subnum = min - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">mul_overflow</span>(<span class="params"></span>)&#123; <span class="comment">// 乘法溢出</span></span><br><span class="line">        uint256 mul = <span class="number">2</span> ** <span class="number">255</span>;</span><br><span class="line">        _mulnum = mul * <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609110929837.png" alt="image-20220609110929837"></p>
+<h2 id="实际攻击例子">实际攻击例子</h2>
+<h3 id="BEC-溢出案例">BEC 溢出案例</h3>
+<p><a href="https://etherscan.io/tx/0xad89ff16fd1ebe3a0a7cf4ed282302c06626c1af33221ebe0d3a470aba4a660f">https://etherscan.io/tx/0xad89ff16fd1ebe3a0a7cf4ed282302c06626c1af33221ebe0d3a470aba4a660f</a></p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609111121193.png" alt="image-20220609111121193"></p>
+<p>合约地址：<a href="https://eth.tokenview.com/cn/address/0xc5d105e63711398af9bbff092d4b6769c82f793d%EF%BC%8C%E4%BB%A3%E7%A0%81%E5%9C%A8%E9%87%8C%E9%9D%A2%E8%8E%B7%E5%8F%96%E6%94%BE">https://eth.tokenview.com/cn/address/0xc5d105e63711398af9bbff092d4b6769c82f793d，代码在里面获取放</a><code>remix</code>里跑一下就行</p>
+<p>乘法溢出点在于他的<code>batchTransfer</code>函数</p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609113059622.png" alt="image-20220609113059622"></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">batchTransfer</span>(<span class="params">address[] _receivers, uint256 _value</span>) public whenNotPaused returns (bool) &#123;</span><br><span class="line">  uint cnt = _receivers.<span class="property">length</span>;</span><br><span class="line">  uint256 amount = <span class="title function_">uint256</span>(cnt) * _value; <span class="comment">// 溢出点在这</span></span><br><span class="line">  <span class="built_in">require</span>(cnt &gt; <span class="number">0</span> &amp;&amp; cnt &lt;= <span class="number">20</span>); <span class="comment">// 这个cnt是地址的长度，最小不能小于0，最大不能大于20个地址</span></span><br><span class="line">  <span class="built_in">require</span>(_value &gt; <span class="number">0</span> &amp;&amp; balances[msg.<span class="property">sender</span>] &gt;= amount); <span class="comment">// 传入的_value值必须大于0 并且 转账的用户余额要大于或等于当前转账数</span></span><br><span class="line"></span><br><span class="line">  balances[msg.<span class="property">sender</span>] = balances[msg.<span class="property">sender</span>].<span class="title function_">sub</span>(amount);</span><br><span class="line">  <span class="keyword">for</span> (uint i = <span class="number">0</span>; i &lt; cnt; i++) &#123;</span><br><span class="line">      balances[_receivers[i]] = balances[_receivers[i]].<span class="title function_">add</span>(_value);</span><br><span class="line">      <span class="title class_">Transfer</span>(msg.<span class="property">sender</span>, _receivers[i], _value);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>部署后在<code>_receivers</code>里放<code>[&quot;0x617F2E2fD72FD9D5503197092aC168c91465E7f2&quot;,&quot;0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB&quot;]</code></p>
+<p>在<code>_value</code>里放 <code>&quot;57896044618658097711785492504343953926634992332820282019728792003956564819968&quot;</code>（2**255的值）</p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20220609113315782.png" alt="image-20220609113315782"></p>
+<p>然后就可以看到 通过溢出 我只需要耗费<code>0</code>的代币就可以获取到<code>57896044618658097711785492504343953926634992332820282019728792003956564819968</code>个代币</p>
+]]></content>
+      <categories>
+        <category>Web3</category>
+      </categories>
+      <tags>
+        <tag>合约安全</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>均线实战</title>
+    <url>/2023/04/18/%E5%9D%87%E7%BA%BF%E5%AE%9E%E6%88%98/</url>
+    <content><![CDATA[<h2 id="均线">均线</h2>
+<h3 id="确立趋势">确立趋势</h3>
+<blockquote>
+<p>书中的三根趋势线分别是5日，10日，55日均线</p>
+</blockquote>
+<p><strong>做空趋势</strong>：当多根均线尤其是长期均线成<strong>空头排列</strong>（<strong>指的是价格在下，以上依次分别为短期线、中期线、长期线</strong>）的时候是空头趋势，如果成空头整齐排序则往往是强势空头趋势，空头趋势尽量<strong>逢高做空，不要做多</strong>。</p>
+<p><strong>做多趋势</strong>：当多根均线尤其是长期均线呈多头排列的时候是多头趋势，如果成多头整齐排列往往是强势多头趋势，多头趋势最好<strong>逢低做多，不要做空</strong></p>
+<p><u>注意：虽然短周期均线（5日，10日）可能向下走，但始终无法突破长周期线（55日），这种情况下。我们仍认为趋势没有改变</u></p>
+<h4 id="均线特点">均线特点</h4>
+<ol>
+<li>均线都有<strong>压力</strong>（<strong>指股价上涨过程中可能遇到压力，从而出现价格反转下跌的价位</strong>）和<strong>支撑</strong>（<strong>指股价下跌过程中可能遇到的支撑，从而出现价格止跌回稳的价位。</strong>）作用</li>
+<li><strong>均线总是合久必分，分久必合</strong></li>
+</ol>
+<h5 id="均线的压力和支撑作用">均线的压力和支撑作用</h5>
+<p>MA5，也就是我们常说的5日均线，就是股票5天的成交价格或指数的平均值。在股价上涨的时候，MA5起到支撑的作用，价位触及5日均线就会反弹上涨。当股价跌破MA5的时候，五日均线就变成了压力线，涨到压力位就很难再涨上去了。</p>
+<h5 id="合久必分，分久必合">合久必分，分久必合</h5>
+<p>当均线与均线互相靠近的时候会<strong>产生排斥力，靠的越近、时间越久、排斥力就越大</strong>，当他们互相远离的时候就会<strong>产生吸引力，离得越远、时间越久、吸引力就越大</strong></p>
+<p>当多根均线互相缠绕在一起或者粘合在一起的时候，叫均线粘合，粘合的过程是一个积聚力量的过程。粘合一但炸开，就会产生很大的爆发力，会将均线快速散开，价格不是加速上涨就是加速下跌。</p>
+<h3 id="均线技巧">均线技巧</h3>
+<h4 id="见底信号的移动平均线，做多">见底信号的移动平均线，做多</h4>
+<ol>
+<li>比特币交叉和银山谷</li>
+<li>金山谷</li>
+<li>首次粘合向上散形和再次粘合向上散形</li>
+<li>加速下跌和蛟龙出海</li>
+</ol>
+<h5 id="比特币交叉和银山谷、金山谷">比特币交叉和银山谷、金山谷</h5>
+<p>比特币交叉：出现在上涨初期，由两根移动平均线组成，<strong>一根短周期的均线由下向上穿过一根长周期的均线，并且长周期均线是向上移动的</strong></p>
+<h6 id="银山谷：">银山谷：</h6>
+<ul>
+<li>
+<p>ema5：红线</p>
+</li>
+<li>
+<p>ema10：黄线</p>
+</li>
+<li>
+<p>ema55：蓝线</p>
+</li>
+</ul>
+<p>价格经过一段时间下跌整理后，ema5均线先后上穿中期均线(ema10)和长期均线(ema55)，中期均线(ema10)也上穿长期均线(ema55)，形成一个尖头朝上的不规则三角形</p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418211406688.png" alt="image-20230418211406688"></p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418211801563.png" alt="image-20230418211801563"></p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418212016215.png" alt="image-20230418212016215"></p>
+<h6 id="金山谷：">金山谷：</h6>
+<p>金山谷一段出现在银山谷之后，并且金山谷的不规则尖头向上三角形与银山谷是相同的，金山谷可处于与银山谷相近的位置，也可高于银山谷</p>
+<h6 id="两个山谷总结">两个山谷总结</h6>
+<p>金山谷买入信号的可靠性要比银山谷强，因为金山谷是对银山谷做多信号的再一次确认</p>
+<h5 id="首次粘合向上发散形和再次粘合向上发散形">首次粘合向上发散形和再次粘合向上发散形</h5>
+<h6 id="形状：">形状：</h6>
+<p>首次粘合向上发散形可以出现在下跌后横盘末期，也可以出现在上涨后横盘末期，几根粘合在一起的均线同时以喷射形态向上发散。</p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418215012743.png" alt="image-20230418215012743"></p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418215059176.png" alt="image-20230418215059176"></p>
+<blockquote>
+<p>注意：粘合向上发散初期买进风险小，越到后面风险越大，当均线发散时，距离越大回调风险越大，例如5日均线与55日均线距离大，一般都会回调</p>
+</blockquote>
+<p>首次粘合向上散形的出现说明第一次向上发散，是过去积弱太久或主力故意打压，经过调整后多方又发动一次进攻，即再次发散，这是投资者买入的机会，并且成功的机会很大</p>
+<h5 id="加速下跌和蛟龙出海">加速下跌和蛟龙出海</h5>
+<h6 id="加速下跌">加速下跌</h6>
+<p>加速下跌出现在下跌后期，在加速下跌之前，<strong>均线系统缓慢或匀速</strong>下跌；在加速下跌时，短、中、长期均线的距离越来越大</p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418220804451.png" alt="image-20230418220804451"></p>
+<p>技术面来说，加速下跌形是一种止跌见低信号，表示价格的下跌能量一下子得到较充分的释放，因而出现止跌现象</p>
+<p>出现这种情况再加以下3个条件也算是见低，可以轻仓做多</p>
+<ul>
+<li>成交量增加：在价格加速下跌的过程中，成交量开始增加，这可能暗示着卖方力量开始减弱，市场情绪也开始回升。</li>
+<li>超卖指标：例如RSI（相对强弱指标）等指标出现超卖信号，暗示价格可能到达一个支撑位，下跌能量得到释放。</li>
+<li>蜡烛图形态：例如锤子线、倒锤子线等底部反转形态出现，暗示价格可能到达支撑位，可能出现反转。</li>
+</ul>
+<h6 id="蛟龙出海">蛟龙出海</h6>
+<p>特征：拉出大阳线，把短、中、长期均线全部吞没，如图显示</p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230418221639203.png" alt="image-20230418221639203"></p>
+<blockquote>
+<p>出现蛟龙出海是明显的见底信号，可以轻仓买进，但是最好在拉出大阳线后多观察以下，如果重心向上移则可以加码追多。</p>
+</blockquote>
+<h4 id="见顶信号的移动平均线，做空">见顶信号的移动平均线，做空</h4>
+<ul>
+<li>死亡交叉、死亡谷</li>
+<li>首次粘合向下发散形和再次粘合向下发散形</li>
+<li>加速上涨和断头铡刀</li>
+</ul>
+<h5 id="死亡交叉">死亡交叉</h5>
+<blockquote>
+<p>特征：</p>
+<p><strong>死亡交叉</strong>出现在<strong>下跌初期，由两根移动平均线组成，一根时间短的均线由上向下穿过一根时间长的均线，并且是时间长的均线向下移动。一般出现在价格经过大幅度上涨后出现死亡交叉。这是一个明显的见顶信号，如果在<em>周K线和月K线出现死亡交叉，见底信号就更明显</em></strong></p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419161916706.png" alt="image-20230419161916706"></p>
+<h5 id="死亡谷">死亡谷</h5>
+<blockquote>
+<p>特征：</p>
+<p>死亡谷出现在<strong>下跌初期，由3根移动平均线交叉组成，短期均线下穿中期、长期均线中期均线下穿长期均线，形成一个尖头向下的不规则三角形</strong></p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419164132860.png" alt="image-20230419164132860"></p>
+<p>在<code>1HOUR</code>周期线中的<code>ETHUSDT</code></p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419164355516.png" alt="image-20230419164355516"></p>
+<p><strong>在死亡谷形成过程中，尖头向下的不规则三角形的出现，表明空方力量积聚了相当大的杀跌能量，是一个见顶信号，出现此信号以做空为主，死亡谷见顶信号比死亡交叉强</strong></p>
+<blockquote>
+<p>做空参考，比如出现<strong>死亡谷</strong>后再出现<strong>多次死亡交叉</strong>可以陆续逢高做空，<strong>如果价格站稳了10日均线以上就要注意止损了</strong></p>
+</blockquote>
+<h5 id="首次粘合向下发散形和再次粘合向下发散形">首次粘合向下发散形和再次粘合向下发散形</h5>
+<blockquote>
+<p>特征：</p>
+<p>空投排列出现在<strong>跌势中，由3根移动平均线组成，最上面一根是长期均线，中间一根是中期均线，最下面一根是短期均线，并且3根均线呈下圆弧状，在首次粘合向下发散形中，粘合时间越长向下发散的力度越大，还要注意向下发散时均线是否整齐排列</strong></p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419190706629.png" alt="image-20230419190706629"></p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419191147394.png" alt="image-20230419191147394"></p>
+<h5 id="加速上涨">加速上涨</h5>
+<blockquote>
+<p>特征：</p>
+<p>加速上涨出现在上涨后期，<strong>在加速上涨之前，均线系统缓慢或匀速上涨；</strong></p>
+<p>在加速上涨时，短期均线和中期、长期均线的距离越拉越大。</p>
+<p>在技术上来说，这种现象是一种止涨见顶现象，可以等均线系统走好后轻仓做多</p>
+</blockquote>
+<h5 id="断头铡刀">断头铡刀</h5>
+<blockquote>
+<p>特征：</p>
+<p>断头铡刀出现在<strong>上涨后期或高位盘整期</strong>，一根大阴线如一把刀，一下子把短、中、长期均线切断，收盘价收在所有短、中、长均线下方，短线客见此信号应该抛开离场。</p>
+<p>中长线需要关注60日和120日均线，如果这两条均线都被断头铡刀就需要止损离场了</p>
+</blockquote>
+<p>如图显示，黑线是3根均线，红的是跌的实体，已经超过了这3根均线</p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419195042879.png" alt="image-20230419195042879"></p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419203916894.png" alt="image-20230419203916894"></p>
+]]></content>
+      <categories>
+        <category>k线学习</category>
+      </categories>
   </entry>
 </search>
