@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.font.im/css?family=HarmonyOS_Regular:300,300italic,400,400italic,700,700italic%7CJetBrains+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="K线被誉为“指标之王”，是最能反馈市场情况的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="K线玄机">
+<meta property="og:url" content="http://example.com/2023/04/19/K%E7%BA%BF%E7%8E%84%E6%9C%BA/index.html">
+<meta property="og:site_name" content="Shoulian Blog">
+<meta property="og:description" content="K线被誉为“指标之王”，是最能反馈市场情况的">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419211403915.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230420143904318.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230420145549110.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230420152021152.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230420153932715.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230420154213582.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230420160213249.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230420221908378.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230420222525481.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230420224636253.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230420224838165.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230420225317689.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230420233238749.png">
+<meta property="article:published_time" content="2023-04-19T13:02:45.000Z">
+<meta property="article:modified_time" content="2023-04-20T15:46:23.074Z">
+<meta property="article:author" content="Shou lian">
+<meta property="article:tag" content="量化">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419211403915.png">
+
+
+<link rel="canonical" href="http://example.com/2023/04/19/K%E7%BA%BF%E7%8E%84%E6%9C%BA/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2023/04/19/K%E7%BA%BF%E7%8E%84%E6%9C%BA/","path":"2023/04/19/K线玄机/","title":"K线玄机"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>K线玄机 | Shoulian Blog</title>
+  
+
+
+
+
+
+<link rel="preconnect" href="https://s1.hdslb.com/" />
+<link rel="stylesheet" href="//s1.hdslb.com/bfs/static/jinkela/long/font/regular.css" media="all" onload="this.media='all'" />
+<link rel="stylesheet" href="//s1.hdslb.com/bfs/static/jinkela/long/font/medium.css" media="all" onload="this.media='all'" />
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Shoulian Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%91%E6%95%B0K%E7%BA%BF%E7%BB%84%E6%88%90%E7%9A%84%E5%8F%8D%E8%BD%AC%E5%BD%A2%E6%80%81"><span class="nav-number">1.</span> <span class="nav-text">少数K线组成的反转形态</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%94%A4%E5%AD%90%E7%BA%BF"><span class="nav-number">1.1.</span> <span class="nav-text">锤子线</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%84%E5%87%BB%E4%B9%8B%E6%98%9F"><span class="nav-number">1.2.</span> <span class="nav-text">射击之星</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%AF%E6%98%8E%E6%98%9F"><span class="nav-number">1.3.</span> <span class="nav-text">启明星</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%BB%84%E6%98%8F%E4%B9%8B%E6%98%9F"><span class="nav-number">1.4.</span> <span class="nav-text">黄昏之星</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%80%BE%E7%9B%86%E5%A4%A7%E9%9B%A8"><span class="nav-number">1.5.</span> <span class="nav-text">倾盆大雨</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%AD%E6%97%A5%E4%B8%9C%E5%8D%87"><span class="nav-number">1.6.</span> <span class="nav-text">旭日东升</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B9%B3%E9%A1%B6%E5%92%8C%E5%B9%B3%E5%BA%95"><span class="nav-number">1.7.</span> <span class="nav-text">平顶和平底</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A9%BF%E5%A4%B4%E7%A0%B4%E8%84%9A"><span class="nav-number">1.8.</span> <span class="nav-text">穿头破脚</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BA%A2%E4%B8%89%E5%85%B5"><span class="nav-number">1.9.</span> <span class="nav-text">红三兵</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Shou lian</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/big/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/04/19/K%E7%BA%BF%E7%8E%84%E6%9C%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Shou lian">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shoulian Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="K线玄机 | Shoulian Blog">
+      <meta itemprop="description" content="K线被誉为“指标之王”，是最能反馈市场情况的">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          K线玄机
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-04-19 21:02:45" itemprop="dateCreated datePublished" datetime="2023-04-19T21:02:45+08:00">2023-04-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-04-20 23:46:23" itemprop="dateModified" datetime="2023-04-20T23:46:23+08:00">2023-04-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/K%E7%BA%BF%E7%8E%84%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">K线玄机</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">K线被誉为“指标之王”，是最能反馈市场情况的</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="少数K线组成的反转形态">少数K线组成的反转形态</h3>
+<blockquote>
+<p>下面这些K线形态都意味着趋势很可能会反转</p>
+</blockquote>
+<h4 id="锤子线">锤子线</h4>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230419211403915.png" alt="image-20230419211403915"></p>
+<p>注意以下几点：</p>
+<ol>
+<li><strong>阴线、阳线</strong>皆可，但如果<strong>实体是阳线，其看涨的意义更坚挺几分</strong></li>
+<li>K线实体处于图形的上端。没有上影线或者上影线极短，<strong>下影线的长度是实体的两倍</strong></li>
+<li>在锤子线之前，必定先有一段下降趋势（哪怕小规模的下降趋势），这样锤子线才能够逆转这个趋势</li>
+<li>如果在锤子线之后出现一根阳线则可靠性更大</li>
+</ol>
+<blockquote>
+<p>如果满足以上所有条件，那么在下降趋势中，锤子线的出现意味着下降趋势将停顿，下降转为横盘或反转</p>
+</blockquote>
+<h4 id="射击之星">射击之星</h4>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230420143904318.png" alt="image-20230420143904318"></p>
+<p>射击之星又称为“倒转锤线”，它有以下4个特点：</p>
+<ol>
+<li>出现在上涨途中</li>
+<li>阳线或者阴线都可，实体很小，上影线的长度大于或等于实体长度的两倍，实体长度与上影线长度比例越悬殊越有参考价值</li>
+<li>一般无下影线或略微一点点下影线</li>
+</ol>
+<blockquote>
+<p>流行线的表示是市场失去上升动能的表现，也是主力出货的常见形态，长长的上影线意味着多方被空方逼退回开盘价，即全天最低价附近，一般上影线越长越表示涨不动了</p>
+</blockquote>
+<h4 id="启明星">启明星</h4>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230420145549110.png" alt="image-20230420145549110"></p>
+<blockquote>
+<p>特征：</p>
+<p>第一根是阴线，中间是十字星，最后一根是阳线</p>
+</blockquote>
+<ol>
+<li>启明星的走势意味着下跌行情结束，市场开始见底反弹</li>
+<li>中间线是实体非常短的k线，即可以是阴线也可以是阳线，也包括十字星，也就是这根k线的开盘价和收盘价无限接近，见底信号非常明显</li>
+<li>第三根线是阳线，表示上升行情开始</li>
+<li><strong>在4H的大周期级别线上出现才最有参考价值</strong></li>
+</ol>
+<blockquote>
+<p>市场含义</p>
+<p>在启明星形态中，当第一根阴线出现时，因为它本身就处于市场下降趋势中，空方动能还是处于上风，主导着市场的下跌趋势。</p>
+<p>当第二个k线出现十字星或者实体小小的k线时，显示空方向下打压数字货币价格的动能已经不足了，与多方力量形成了对抗。</p>
+<p>接着第三根k线出现一根向上坚挺的阳线，并上穿第一根阴线实体内，说明多方力量消退了空方力量，这种形态一般空方不敢轻易做空，而激进买入者则会考虑进场</p>
+</blockquote>
+<p>启明星的理想形态是第三根阳线相对于中间的星线也出现向上的跳空，如图</p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230420152021152.png" alt="image-20230420152021152"></p>
+<h4 id="黄昏之星">黄昏之星</h4>
+<p>黄昏之星和启明星相反</p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230420153932715.png" alt="image-20230420153932715"></p>
+<ol>
+<li>第一根是阳线</li>
+<li>第二根是星线</li>
+<li>第三根是阴线</li>
+</ol>
+<h4 id="倾盆大雨">倾盆大雨</h4>
+<img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230420154213582.png" alt="image-20230420154213582" style="zoom:80%;" />
+<p>倾盆大雨形态由两根K线组成，一般出<strong>现在上升趋势之后，也可能出现在水平调整区间的顶部。是一个看跌反转信号</strong></p>
+<blockquote>
+<p>形态：</p>
+<ol>
+<li>第一根K线为大阳线或者中阳线</li>
+<li>第二根K线为低开低收的中阴线或大阴线，收盘价比前一根阳线开盘价还要低</li>
+</ol>
+<p>市场含义：</p>
+<p>当出现这种k线组合时，形式对多方极为不利，关键在于低开低收的阴线使多方信心受到打击。低开说明人脉已不敢再追高，而想低价割肉的投资者却大有人在。</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230420160213249.png" alt="image-20230420160213249"></p>
+<h4 id="旭日东升">旭日东升</h4>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230420221908378.png" alt="image-20230420221908378"></p>
+<p>旭日东升出现在下降趋势中，由一阴一阳两根k线组成，<strong>先阳后阴</strong>，且<strong>阳线的收盘价高于阴线的开盘价</strong>，往往阳线实体越长，后市反转力度越强</p>
+<h4 id="平顶和平底">平顶和平底</h4>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230420222525481.png" alt="image-20230420222525481"></p>
+<p>平顶：表示<strong>见顶</strong>，在<strong>上涨趋势出现</strong>，K线<strong>最高点相同</strong>，满足平顶的K线越多越有参考价值</p>
+<p>平底：表示<strong>见底</strong>，在<strong>下跌趋势出现</strong>，K线<strong>最低点相同</strong>，满足平底的K线越多越有参考价值</p>
+<blockquote>
+<p>注意：实际应用<strong>一定结合压力与支撑</strong>，不然容易形成<strong>骗线</strong></p>
+</blockquote>
+<p>平顶案例：</p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230420224636253.png" alt="image-20230420224636253"></p>
+<p>平底案例：</p>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230420224838165.png" alt="image-20230420224838165"></p>
+<h4 id="穿头破脚">穿头破脚</h4>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230420225317689.png" alt="image-20230420225317689"></p>
+<blockquote>
+<p>穿头破脚一波会<strong>提示后市强烈的走势</strong></p>
+</blockquote>
+<p><strong>阴包阳的穿头破脚</strong>的特征：</p>
+<ol>
+<li>在上升趋势出现</li>
+<li><strong>第二根阴线实体长度必须足以覆盖第一根阳线实体的全部</strong></li>
+<li>在<strong>上升趋势的末段中出现，趋势逆转的可能性比较大</strong></li>
+</ol>
+<p><strong>阳包阴的穿头破脚</strong>的特征：</p>
+<ol>
+<li>在下跌趋势中出现</li>
+<li><strong>第二根阳线实体长度必须足以覆盖第一根阴线实体的全部</strong></li>
+</ol>
+<p>此<strong>转势的信号强弱</strong>与下面因素有关</p>
+<ol>
+<li>穿头破脚的前后两根K线<strong>实体长度越悬殊</strong>，转势力度就越强</li>
+<li>第二根K线<strong>覆盖前面的K线越多</strong>，转势的机会就越大</li>
+<li>在<strong>下跌趋势末期</strong>出现<strong>穿头破脚的阳线越大</strong>，跌势逆转的可能性越大</li>
+<li>若连续两个或者多个穿头破脚则后期形成转势的力度越大</li>
+</ol>
+<h4 id="红三兵">红三兵</h4>
+<blockquote>
+<p>特征：</p>
+<p>由三根K线组成，三根K线均为阳线，K线实体不大，<strong>每根阳线的收盘价均高于前一根阳线的收盘价</strong>，并且<strong>第三根阳线实体必须站在5日、10日均线之上，并且5日均线向上与10日均线靠拢，甚至金叉</strong></p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/shoulian2022/iamges/main/mark_imageimage-20230420233238749.png" alt="image-20230420233238749"></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%87%8F%E5%8C%96/" rel="tag"># 量化</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/04/18/%E5%9D%87%E7%BA%BF%E5%AE%9E%E6%88%98/" rel="prev" title="均线实战">
+                  <i class="fa fa-chevron-left"></i> 均线实战
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shou lian</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@next-theme/pjax@0.5.0/pjax.min.js" integrity="sha256-3NkoLDrmHLTYj7csHIZSr0MHAFTXth7Ua/DDt4MRUAg=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/pjax.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
